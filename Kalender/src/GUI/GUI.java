@@ -52,9 +52,5 @@ public class GUI {
 		panel_4.add(panel_3);
 		panel_3.setLayout(null);
 		
-		JLabel lblKalender = new JLabel("Kalender");
-		lblKalender.setBounds(97, 70, 153, 16);
-		panel.add(lblKalender);
-		
 	}
 }

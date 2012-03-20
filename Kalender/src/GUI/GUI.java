@@ -9,6 +9,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import java.awt.FlowLayout;
 import javax.swing.border.TitledBorder;
+import java.awt.CardLayout;
 
 public class GUI {
 	
@@ -16,10 +17,9 @@ public class GUI {
 	
 	public static void main(String[] args) {
 		frame.setSize(1024, 768);
-		frame.getContentPane().setLayout(null);
+		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(6, 6, 1009, 729);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -51,6 +51,10 @@ public class GUI {
 		panel_3.setBounds(6, 22, 769, 514);
 		panel_4.add(panel_3);
 		panel_3.setLayout(null);
+		
+		JLabel lblKalender = new JLabel("Kalender");
+		lblKalender.setBounds(97, 70, 153, 16);
+		panel.add(lblKalender);
 		
 	}
 }

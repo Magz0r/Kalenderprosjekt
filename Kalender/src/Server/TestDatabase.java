@@ -14,6 +14,8 @@ public class TestDatabase {
 	 */
 	public static void main(String[] args) {
 		Appointment appointment = new Appointment(new Room("R41", 5),new Date(2000,1,1, 12, 00),new Date(2000,1,1,13,00),new User("Name1","test@test.no","Test"),"Testavtale","Testinnhold",false);
+		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
+		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
 			Database.addAppointment(appointment);
 		} catch (SQLException e) {

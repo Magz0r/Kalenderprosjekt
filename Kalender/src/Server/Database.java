@@ -50,7 +50,10 @@ public class Database {
 		if(appointment.getAttendies().size() > 0) {
 			ResultSet rs = s.executeQuery("SELECT id FROM appointment WHERE owner='" + user + "' ORDER BY id DESC");
 			rs.first();
-			rs.getInt(1);
+			int id = rs.getInt(1);
+			for(int i = 0; i< appointment.getAttendies().size();i++) {
+				s.executeUpdate("INSERT INTO user_has_appointment (user_username, appointment_id) VALUES ('" + appointment.getAttendies().get(i).getUsername() + "', " + id + ")");
+			}
 		}
 	}
 }

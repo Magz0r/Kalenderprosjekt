@@ -16,8 +16,15 @@ public class GUI {
 	public static JFrame frame = new JFrame();
 	
 	public static void main(String[] args) {
+		
+		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+		catch (ClassNotFoundException e) {}
+		catch (InstantiationException e) {}
+		catch (IllegalAccessException e) {}
+		catch (UnsupportedLookAndFeelException e) {}
+
 		frame.setSize(1024, 768);
-		frame.getContentPane().setLayout(new CardLayout(0, 0));
+		frame.getContentPane();
 		
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel);

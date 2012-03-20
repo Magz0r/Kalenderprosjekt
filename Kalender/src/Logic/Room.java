@@ -4,10 +4,12 @@ public class Room {
 
 	private String name;
 	private int capasity;
+	private boolean available;
 	
 	public Room(String name, int capasity) {
 		this.name = name;
 		this.capasity = capasity;
+		available = true;
 	}
 
 	public String getName() {
@@ -26,5 +28,11 @@ public class Room {
 		this.capasity = capasity;
 	}
 	
+	public boolean isAvailable(){
+		return available;
+	}
 	
+	public void setAvailable(boolean available){
+		this.available = available;
+	}
 }

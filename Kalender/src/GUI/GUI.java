@@ -17,7 +17,7 @@ public class GUI {
 	
 	public static void main(String[] args) {
 		frame.setSize(1024, 768);
-		frame.getContentPane().setLayout(new CardLayout(0, 0));
+		frame.getContentPane();
 		
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel);

@@ -98,5 +98,8 @@ public class Appointment {
 	public void removeAttending(User user) {
 		attendies.remove(user);
 	}
+	public void removeAttendings(){
+		attendies.clear();
+	}
 	
 }

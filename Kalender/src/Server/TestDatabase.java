@@ -2,28 +2,33 @@ package Server;
 
 import java.sql.SQLException;
 
+import Logic.Appointment;
+import Logic.Room;
+import Logic.Date;
+import Logic.User;
+
 public class TestDatabase {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Appointment appointment = new Appointment(new Room("R41", 5),new Date(2000,1,1, 12, 00),new Date(2000,1,1,13,00),new User("Name1","test@test.no","Test"),"Testavtale","Testinnhold",false);
 		try {
-			Database.connect();
+			Database.addAppointment(appointment);
+		} catch (SQLException e) {
+			System.out.println("Crash");
+			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Crash");
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Crash");
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Crash");
 			e.printStackTrace();
 		}
-
 	}
 
 }

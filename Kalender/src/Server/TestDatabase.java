@@ -17,7 +17,7 @@ public class TestDatabase {
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
-			Database.addAppointment(appointment);
+			Database.delAppointment(appointment);
 		} catch (SQLException e) {
 			System.out.println("Crash");
 			e.printStackTrace();

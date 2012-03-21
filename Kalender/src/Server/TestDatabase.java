@@ -20,6 +20,7 @@ public class TestDatabase {
 		User user = new User("Test","test@stes.test","tandberg");
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
+		
 		try {
 			//Database.editAppointment(appointment, appointment2);
 			//Database.addAppointment(appointment);

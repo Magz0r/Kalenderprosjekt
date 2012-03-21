@@ -145,8 +145,8 @@ public class Database {
 		while(rs.next()) {
 			Appointment a = new Appointment();
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
-			a.setStart(new Date(2000,1,1,12,00));
-			a.setEnd(new Date(2000,1,1,13,00));
+			a.setStart(toDate(rs.getString("start")));
+			a.setEnd(toDate(rs.getString("end")));
 			a.setOwner(new User("Test","test@test","Testnavn"));
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));
@@ -159,6 +159,18 @@ public class Database {
 			output.add(a);
 		}
 		close();
+		return output;
+	}
+	private static Date toDate(String dateString) {
+		String[] ar = dateString.split(" ");
+		String[] d = ar[0].split("-");
+		String[] t = ar[1].split(":");
+		int year = Integer.parseInt(d[0]);
+		int month = Integer.parseInt(d[1]);
+		int day = Integer.parseInt(d[2]);
+		int hour = Integer.parseInt(t[0]);
+		int minute = Integer.parseInt(t[1]);
+		Date output = new Date(year, month, day, hour, minute);
 		return output;
 	}
 }

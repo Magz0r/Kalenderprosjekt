@@ -36,6 +36,8 @@ public class TestDatabase {
 				System.out.println(al.get(i).getEnd().getTimeString());
 				System.out.println(al.get(i).getRoom().getName());
 				System.out.println(al.get(i).getStart().getTimeString());
+				System.out.println(al.get(i).getOwner().getName());
+				System.out.println("Test" + al.get(i).getAttendies().get(0).getName());
 			}
 		} catch (SQLException e) {
 			System.out.println("Crash");

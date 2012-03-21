@@ -32,7 +32,7 @@ public class Appointment {
 	}
 	
 	public Appointment() {
-		
+		attendies = new ArrayList<User>();
 	}
 	
 	public Room getRoom() {

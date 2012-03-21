@@ -5,8 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import Logic.Appointment;
+import Logic.Date;
+import Logic.Room;
+import Logic.User;
+import Logic.Notification;
 
 public class Database {
 	private static Connection con;
@@ -95,5 +100,65 @@ public class Database {
 		Statement s = con.createStatement();
 		s.executeUpdate("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");
 		close();
+	}
+	public static void addNotification(User user, String notification) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		addNotificationStatus(user, notification, 0);
+		close();
+	}
+	public static void setNotificationRead(Notification notification, boolean read) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		int readInt;
+		if(read) {
+			readInt = 1;
+		}
+		else {
+			readInt = 0;
+		}
+		s.executeUpdate("DELETE FROM notification WHERE user_username='" + notification.getUser().getUsername() + "' AND text='" + notification.getText() + "'");
+		addNotificationStatus(notification.getUser(), notification.getText(), readInt);
+		close();
+	}
+	private static void addNotificationStatus(User user, String notification, int read) throws SQLException {
+		Statement s = con.createStatement();
+		s.executeUpdate("INSERT INTO notification (`user_username`, `text`, `read`) VALUES ('" + user.getUsername() + "', '" + notification + "', " + read + ")");
+	}
+	public static boolean login(String username, String passwd) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		connect();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM user WHERE username='" + username + "' AND password='" + passwd + "'");
+		if(rs.next()) {
+			close();
+			return true;
+		}
+		else {
+			close();
+			return false;
+		}
+	}
+	public static ArrayList<Appointment> getAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		ArrayList<Appointment> output = new ArrayList<Appointment>();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "'");
+		while(rs.next()) {
+			Appointment a = new Appointment();
+			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
+			a.setStart(new Date(2000,1,1,12,00));
+			a.setEnd(new Date(2000,1,1,13,00));
+			a.setOwner(new User("Test","test@test","Testnavn"));
+			a.setTitle(rs.getString("title"));
+			a.setDescription(rs.getString("description"));
+			if(rs.getString("private").equals("1")) {
+				a.setHidden(true);
+			}
+			else {
+				a.setHidden(false);
+			}
+			output.add(a);
+		}
+		close();
+		return output;
 	}
 }

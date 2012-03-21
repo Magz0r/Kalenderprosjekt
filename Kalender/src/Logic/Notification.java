@@ -6,10 +6,9 @@ public class Notification {
 	private String text;
 	private boolean read;
 	
-	public Notification(User user, String text, boolean read) {
+	public Notification(User user, String text) {
 		this.user = user;
 		this.text = text;
-		this.read = read;
 	}
 
 	public User getUser() {

@@ -14,10 +14,14 @@ public class TestDatabase {
 	 */
 	public static void main(String[] args) {
 		Appointment appointment = new Appointment(new Room("R41", 5),new Date(2000,1,1, 12, 00),new Date(2000,1,1,13,00),new User("Name1","test@test.no","Test"),"Testavtale","Testinnhold",false);
+		Appointment appointment2 = new Appointment(new Room("R40", 4),new Date(2000,1,1, 12, 00),new Date(2000,1,1,13,00),new User("Name1","test@test.no","Test"),"Testavtale","Testinnhold",false);
+		
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
-			Database.delAppointment(appointment);
+			Database.editAppointment(appointment, appointment2);
+			//Database.addAppointment(appointment);
+			//Database.delAppointment(appointment);
 		} catch (SQLException e) {
 			System.out.println("Crash");
 			e.printStackTrace();

@@ -10,6 +10,13 @@ import Logic.Appointment;
 
 public class Database {
 	private static Connection con;
+	private static String start;
+	private static String end;
+	private static String title;
+	private static String description;
+	private static String user;
+	private static String room_id;
+	private static int privat;
 	public static void connect() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		final String url = "jdbc:mysql://mysql.stud.ntnu.no/" +
 		  		"thomagje_gruppe41";
@@ -31,20 +38,8 @@ public class Database {
 		}
 	}
 	public static void addAppointment(Appointment appointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		String start = appointment.getStart().getTimeString();
-		String end = appointment.getEnd().getTimeString();
-		String title = appointment.getTitle();
-		String description = appointment.getDescription();
-		String user = appointment.getOwner().getUsername();
-		String room_id = appointment.getRoom().getName();
-		int privat;
-		if(appointment.isHidden()) {
-			privat = 1;
-		}
-		else {
-			privat = 0;
-		}
 		connect();
+		setAppointmentVars(appointment);
 		Statement s = con.createStatement();
 		s.executeUpdate("INSERT INTO appointment (start,end,title,description, owner, room_id,private) VALUES ('" + start + "', '" + end + "', '" + title + "', '" + description + "', '" + user + "', '" + room_id + "', " + privat + ")");
 		if(appointment.getAttendies().size() > 0) {
@@ -61,23 +56,24 @@ public class Database {
 	connect();
 	Statement s = con.createStatement();
 	s.executeUpdate("DELETE FROM appointment WHERE id='" + getAppointmentId(appointment) + "'");
-	
 	close();
 	}
-	private static String getAppointmentId(Appointment appointment) throws SQLException {
-		String start = appointment.getStart().getTimeString();
-		String end = appointment.getEnd().getTimeString();
-		String title = appointment.getTitle();
-		String description = appointment.getDescription();
-		String user = appointment.getOwner().getUsername();
-		String room_id = appointment.getRoom().getName();
-		int privat;
+	private static void setAppointmentVars(Appointment appointment) {
+		start = appointment.getStart().getTimeString();
+		end = appointment.getEnd().getTimeString();
+		title = appointment.getTitle();
+		description = appointment.getDescription();
+		user = appointment.getOwner().getUsername();
+		room_id = appointment.getRoom().getName();
 		if(appointment.isHidden()) {
 			privat = 1;
 		}
 		else {
 			privat = 0;
 		}
+	}
+	private static String getAppointmentId(Appointment appointment) throws SQLException {
+		setAppointmentVars(appointment);
 		Statement s = con.createStatement();
 		ResultSet rs = s.executeQuery("SELECT id FROM appointment WHERE start='" + start + "' AND end='" + end + "' AND title='" + title + "' AND description='" + description + "' AND owner='" + user + "' AND room_id='" + room_id + "' AND private='" + privat + "'");
 		
@@ -85,5 +81,19 @@ public class Database {
 			return rs.getString(1);
 		}
 		return null;
+	}
+	public static void editAppointment(Appointment oldAppointment, Appointment newAppointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		connect();
+		setAppointmentVars(newAppointment);
+		int newPrivate;
+		if(newAppointment.isHidden()) {
+			newPrivate = 1;
+		}
+		else {
+			newPrivate = 0;
+		}
+		Statement s = con.createStatement();
+		s.executeUpdate("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");
+		close();
 	}
 }

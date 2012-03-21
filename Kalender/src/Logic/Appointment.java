@@ -30,7 +30,11 @@ public class Appointment {
 		hidden = true;
 		attendies = new ArrayList<User>();
 	}
-
+	
+	public Appointment() {
+		
+	}
+	
 	public Room getRoom() {
 		return room;
 	}

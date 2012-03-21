@@ -1,6 +1,7 @@
 package Server;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import Logic.Appointment;
 import Logic.Notification;
@@ -25,7 +26,16 @@ public class TestDatabase {
 			//Database.delAppointment(appointment);
 			//Database.addNotification(user, "Test");
 			//Database.setNotificationRead(new Notification(user, "Test"), true);
-			System.out.print(Database.login("tandberg", "1234"));
+			//System.out.print(Database.login("tandberg", "1234"));
+			ArrayList<Appointment> al = new ArrayList<Appointment>();
+			al = Database.getAppointmentsForUser("OlaN");
+			for(int i = 0;i<al.size();i++) {
+				System.out.println(al.get(i).getTitle());
+				System.out.println(al.get(i).getDescription());
+				System.out.println(al.get(i).getEnd().getTimeString());
+				System.out.println(al.get(i).getRoom().getName());
+				System.out.println(al.get(i).getStart().getTimeString());
+			}
 		} catch (SQLException e) {
 			System.out.println("Crash");
 			e.printStackTrace();

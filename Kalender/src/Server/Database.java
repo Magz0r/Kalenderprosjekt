@@ -5,8 +5,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import Logic.Appointment;
+import Logic.Date;
+import Logic.Room;
 import Logic.User;
 import Logic.Notification;
 
@@ -126,10 +129,36 @@ public class Database {
 		Statement s = con.createStatement();
 		ResultSet rs = s.executeQuery("SELECT * FROM user WHERE username='" + username + "' AND password='" + passwd + "'");
 		if(rs.next()) {
+			close();
 			return true;
 		}
 		else {
+			close();
 			return false;
 		}
+	}
+	public static ArrayList<Appointment> getAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		ArrayList<Appointment> output = new ArrayList<Appointment>();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "'");
+		while(rs.next()) {
+			Appointment a = new Appointment();
+			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
+			a.setStart(new Date(2000,1,1,12,00));
+			a.setEnd(new Date(2000,1,1,13,00));
+			a.setOwner(new User("Test","test@test","Testnavn"));
+			a.setTitle(rs.getString("title"));
+			a.setDescription(rs.getString("description"));
+			if(rs.getString("private").equals("1")) {
+				a.setHidden(true);
+			}
+			else {
+				a.setHidden(false);
+			}
+			output.add(a);
+		}
+		close();
+		return output;
 	}
 }

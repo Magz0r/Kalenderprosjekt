@@ -27,14 +27,10 @@ public class Room {
 	public void setCapasity(int capasity) {
 		this.capasity = capasity;
 	}
-<<<<<<< HEAD
 	
 	public boolean isAvailable(){
 		return available;
 	}
-=======
-
->>>>>>> 1d3fc9ba572430c02bf9b4cfb988ebb1ca1cfb02
 	
 	public void setAvailable(boolean available){
 		this.available = available;

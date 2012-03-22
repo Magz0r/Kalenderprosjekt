@@ -25,6 +25,6 @@ public class Room {
 	public void setCapasity(int capasity) {
 		this.capasity = capasity;
 	}
-	
+
 	
 }

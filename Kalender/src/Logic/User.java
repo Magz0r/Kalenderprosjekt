@@ -45,5 +45,6 @@ public class User {
 	public void removeNotification(Notification notification) {
 		notifications.remove(notification);
 	}
+
 	
 }

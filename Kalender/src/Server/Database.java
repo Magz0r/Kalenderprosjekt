@@ -199,4 +199,66 @@ public class Database {
 		Date output = new Date(year, month, day, hour, minute);
 		return output;
 	}
+	public static ArrayList<Notification> getNotifications(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM notification WHERE user_username='" + username + "' AND `read`='0'");
+		ArrayList<Notification> output = new ArrayList<Notification>();
+		while(rs.next()) {
+			User user = getUser(rs.getString("user_username"));
+			Notification note = new Notification(user,rs.getString("text"));
+			output.add(note);
+		}
+		close();
+		return output;
+	}
+	public static ArrayList<Appointment> getUnansweredAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		ArrayList<Appointment> output = new ArrayList<Appointment>();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "' AND attending IS NULL");
+		while(rs.next()) {
+			Appointment a = new Appointment();
+			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
+			a.setStart(toDate(rs.getString("start")));
+			a.setEnd(toDate(rs.getString("end")));
+			a.setOwner(getUser(rs.getString("user_username")));
+			a.setTitle(rs.getString("title"));
+			a.setDescription(rs.getString("description"));
+			if(rs.getString("private").equals("1")) {
+				a.setHidden(true);
+			}
+			else {
+				a.setHidden(false);
+			}
+			String id = rs.getString("id");
+			System.out.println(id);
+			ArrayList<User> al = getUsersByAppointment(id);
+			for(int i = 0;i<al.size();i++) {
+				a.addAttending(al.get(i));
+			}
+			output.add(a);
+		}
+		close();
+		return output;
+	}
+	public static ArrayList<User> getAllUsers() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM user");
+		ArrayList<User> output = new ArrayList<User>();
+		while(rs.next()) {
+			User user = new User(rs.getString("name"),rs.getString("email"), rs.getString("username"));
+			output.add(user);
+		}
+		close();
+		return output;
+	}
+	public static void addUser(User user, String password) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		s.executeUpdate("INSERT INTO user (username,name,email,password) VALUES ('" + user.getUsername() + "', '" + user.getName() + "', '" + user.getEmail() + "', '" + password + "')");
+		close();
+	}
+	
 }

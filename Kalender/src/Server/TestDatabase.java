@@ -21,7 +21,7 @@ public class TestDatabase {
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
-			ArrayList<Room> al = Database.getAvailableRooms(5, new Date(2002,1,1,13,00), new Date(2002,1,1,14,00));
+			ArrayList<Room> al = Database.getAvailableRooms(5, new Date(1999,1,1,12,00), new Date(1999,1,1,13,00));
 			for(int i = 0;i<al.size();i++) {
 				System.out.println(al.get(i).getName());
 			}

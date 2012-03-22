@@ -5,8 +5,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import Logic.Appointment;
+import Logic.Date;
+import Logic.Room;
 import Logic.User;
 import Logic.Notification;
 
@@ -126,10 +129,74 @@ public class Database {
 		Statement s = con.createStatement();
 		ResultSet rs = s.executeQuery("SELECT * FROM user WHERE username='" + username + "' AND password='" + passwd + "'");
 		if(rs.next()) {
+			close();
 			return true;
 		}
 		else {
+			close();
 			return false;
 		}
+	}
+	public static ArrayList<Appointment> getAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		ArrayList<Appointment> output = new ArrayList<Appointment>();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "'");
+		while(rs.next()) {
+			Appointment a = new Appointment();
+			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
+			a.setStart(toDate(rs.getString("start")));
+			a.setEnd(toDate(rs.getString("end")));
+			a.setOwner(getUser(rs.getString("user_username")));
+			a.setTitle(rs.getString("title"));
+			a.setDescription(rs.getString("description"));
+			if(rs.getString("private").equals("1")) {
+				a.setHidden(true);
+			}
+			else {
+				a.setHidden(false);
+			}
+			String id = rs.getString("id");
+			System.out.println(id);
+			ArrayList<User> al = getUsersByAppointment(id);
+			for(int i = 0;i<al.size();i++) {
+				a.addAttending(al.get(i));
+			}
+			output.add(a);
+		}
+		close();
+		return output;
+	}
+	private static ArrayList<User> getUsersByAppointment(String id) throws SQLException {
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT username, name, email FROM user,user_has_appointment WHERE user_username=username AND appointment_id='" + id + "'");
+		ArrayList<User> output = new ArrayList<User>();
+		while(rs.next()) {
+			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
+			System.out.println("getUsers" + user.getName());
+			output.add(user);
+		}
+		return output;
+	}
+	private static User getUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM user WHERE username='" + username + "'");
+		if(rs.next()) {
+			User user = new User(rs.getString("name"), rs.getString("email"),rs.getString("username"));
+			return user;
+		}
+		return null;
+	}
+	private static Date toDate(String dateString) {
+		String[] ar = dateString.split(" ");
+		String[] d = ar[0].split("-");
+		String[] t = ar[1].split(":");
+		int year = Integer.parseInt(d[0]);
+		int month = Integer.parseInt(d[1]);
+		int day = Integer.parseInt(d[2]);
+		int hour = Integer.parseInt(t[0]);
+		int minute = Integer.parseInt(t[1]);
+		Date output = new Date(year, month, day, hour, minute);
+		return output;
 	}
 }

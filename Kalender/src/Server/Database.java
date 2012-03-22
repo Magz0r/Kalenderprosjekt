@@ -199,4 +199,17 @@ public class Database {
 		Date output = new Date(year, month, day, hour, minute);
 		return output;
 	}
+	public static ArrayList<Notification> getNotifications(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM notification WHERE user_username='" + username + "' AND `read`='0'");
+		ArrayList<Notification> output = new ArrayList<Notification>();
+		while(rs.next()) {
+			User user = getUser(rs.getString("user_username"));
+			Notification note = new Notification(user,rs.getString("text"));
+			output.add(note);
+		}
+		close();
+		return output;
+	}
 }

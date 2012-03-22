@@ -40,7 +40,7 @@ public class Server {
 //		interpretInput("getAllUsers");
 //		interpretInput("getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00");
 //		interpretInput("addUser#Vegard-vegard.holter@gmail.com-vegaholt,123");
-		interpretInput("addRoom#R3-300");
+//		interpretInput("addRoom#R3-300");
 	}
 	static void interpretInput(String input) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		//Splitter command til string og args til string[]
@@ -77,7 +77,7 @@ public class Server {
 			Database.addAppointment(appointment);
 			break;
 		}
-		case 2 :{//delappointment#starttime,endtime,title,desctiption,owner,room_id,private
+		case 2 :{ //delappointment
 			Date start = Date.toDate(args[0]);
 			Date end = Date.toDate(args[1]);
 			String title = args[2];
@@ -90,7 +90,7 @@ public class Server {
 			Database.delAppointment(appointment);
 			break;
 		}
-		case 3: {
+		case 3: { //editAppointment
 			Date OLDstart = Date.toDate(args[0]);
 			Date OLDend = Date.toDate(args[1]);
 			String OLDtitle = args[2];
@@ -112,43 +112,42 @@ public class Server {
 			Database.editAppointment(OLDappointment, appointment);
 			break;
 		}
-		case 4: {
+		case 4: { //setNotificationRead
 			User user = User.toUser(args[0]);
 			String tekst = args[1];
 			Notification notification = new Notification(user, tekst);
 			Database.setNotificationRead(notification, true);
 			break;
 		}
-		case 5: {
+		case 5: { //getAppointmentsForUser
 			String username = args[0];
 			ArrayList<Appointment> appointments = Database.getAppointmentsForUser(username);
 			//lag format for sending til client
 			break;
 		}
-		case 6: {
+		case 6: { //getUnansweredAppointmentsForUser
 			String username = args[0];
 			ArrayList<Appointment> appointments = Database.getUnansweredAppointmentsForUser(username);
 			break;
 		}
-		case 7: {
-			System.out.println("RETT");
-//			ArrayList<User> users = Database.getAllUsers();
+		case 7: { //getAllUsers
+			ArrayList<User> users = Database.getAllUsers();
 			break;
 		}
-		case 8: {
+		case 8: { //getAvailableRooms
 			int capasity = Integer.parseInt(args[0]);
 			Date start = Date.toDate(args[1]);
 			Date end = Date.toDate(args[2]);
 			ArrayList<Room> rooms = Database.getAvailableRooms(capasity, start, end);
 			break;
 		}
-		case 9: {
+		case 9: { //addUser
 			User user = User.toUser(args[0]);
 			String password = args[1];
 			Database.addUser(user, password);
 			break;
 		}
-		case 10: {
+		case 10: { //addRoom
 			Room room = Room.toRoom(args[0]);
 			Database.addRoom(room);
 			break;

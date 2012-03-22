@@ -31,7 +31,9 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener {
 	private JButton removeUserButton, removeAllUsersButton, saveButton, cancelButton, deleteButton;
 	private DefaultListModel userListModel, roomListModel, participantListModel;
 	private JScrollPane userScroll, roomScroll, participantsScroll;
-	
+	public static void main(String[] args) {
+		new CreateAppointmentGUI("hah");
+	}
 	public CreateAppointmentGUI(String username) {
 		
 		frame = new JFrame();
@@ -108,6 +110,7 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener {
 		setLayout(new GridBagLayout());
 		c = new GridBagConstraints();
 		
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
 		add(newAppointmentLabel, c);

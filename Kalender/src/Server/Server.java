@@ -24,20 +24,32 @@ public class Server {
 		commandList.add("editappointment");
 		commandList.add("setNotificationRead");
 		commandList.add("getAppointmentsForUser");
+		commandList.add("getUnansweredAppointmentsForUser");
+		commandList.add("getAllUsers");
+		commandList.add("getAvailableRooms");
+		commandList.add("addUser");
+		commandList.add("addRoom");
 		
 //		interpretInput("login#Tandberg,123");
 //		interpretInput("addappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0");
 //		interpretInput("delappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0");
 //		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Kjel-200,0");
 //		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
-		interpretInput("getAppointmentsForUser#OlaN");
+//		interpretInput("getAppointmentsForUser#OlaN");
+//		interpretInput("getUnansweredAppointmentsForUser#OlaN");
+//		interpretInput("getAllUsers");
+//		interpretInput("getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00");
+//		interpretInput("addUser#Vegard-vegard.holter@gmail.com-vegaholt,123");
+		interpretInput("addRoom#R3-300");
 	}
 	static void interpretInput(String input) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		//Splitter command til string og args til string[]
 		String[] args = input.split("#");
 		String command = args[0];
-		args = args[1].split(",");
-		print(command, args);
+		if(args.length!=1){
+			args = args[1].split(",");
+		}
+		print(command, args); //for testing
 		
 		
 		//Finner metodeindex
@@ -45,6 +57,7 @@ public class Server {
 		for(int i = 0; i < commandList.size(); i++){
 			if(command.equals(commandList.get(i))) commandIndex = i;
 		}
+//		System.out.println("INDEX" + commandIndex); //for testing
 		
 		switch(commandIndex){
 		case 0 :{ //login
@@ -109,7 +122,35 @@ public class Server {
 		case 5: {
 			String username = args[0];
 			ArrayList<Appointment> appointments = Database.getAppointmentsForUser(username);
-			System.out.println(appointments.get(0));
+			//lag format for sending til client
+			break;
+		}
+		case 6: {
+			String username = args[0];
+			ArrayList<Appointment> appointments = Database.getUnansweredAppointmentsForUser(username);
+			break;
+		}
+		case 7: {
+			System.out.println("RETT");
+//			ArrayList<User> users = Database.getAllUsers();
+			break;
+		}
+		case 8: {
+			int capasity = Integer.parseInt(args[0]);
+			Date start = Date.toDate(args[1]);
+			Date end = Date.toDate(args[2]);
+			ArrayList<Room> rooms = Database.getAvailableRooms(capasity, start, end);
+			break;
+		}
+		case 9: {
+			User user = User.toUser(args[0]);
+			String password = args[1];
+			Database.addUser(user, password);
+			break;
+		}
+		case 10: {
+			Room room = Room.toRoom(args[0]);
+			Database.addRoom(room);
 			break;
 		}
 		}

@@ -145,8 +145,8 @@ public class Database {
 		while(rs.next()) {
 			Appointment a = new Appointment();
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
-			a.setStart(toDate(rs.getString("start")));
-			a.setEnd(toDate(rs.getString("end")));
+			a.setStart(Date.toDate(rs.getString("start")));
+			a.setEnd(Date.toDate(rs.getString("end")));
 			a.setOwner(getUser(rs.getString("user_username")));
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));
@@ -187,18 +187,6 @@ public class Database {
 		}
 		return null;
 	}
-	public static Date toDate(String dateString) {
-		String[] ar = dateString.split(" ");
-		String[] d = ar[0].split("-");
-		String[] t = ar[1].split(":");
-		int year = Integer.parseInt(d[0]);
-		int month = Integer.parseInt(d[1]);
-		int day = Integer.parseInt(d[2]);
-		int hour = Integer.parseInt(t[0]);
-		int minute = Integer.parseInt(t[1]);
-		Date output = new Date(year, month, day, hour, minute);
-		return output;
-	}
 	public static ArrayList<Notification> getNotifications(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();
@@ -220,8 +208,8 @@ public class Database {
 		while(rs.next()) {
 			Appointment a = new Appointment();
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
-			a.setStart(toDate(rs.getString("start")));
-			a.setEnd(toDate(rs.getString("end")));
+			a.setStart(Date.toDate(rs.getString("start")));
+			a.setEnd(Date.toDate(rs.getString("end")));
 			a.setOwner(getUser(rs.getString("user_username")));
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));

@@ -45,6 +45,7 @@ public class User {
 	public void removeNotification(Notification notification) {
 		notifications.remove(notification);
 	}
+<<<<<<< HEAD
 	public static User toUser(String arg){
 		String[] args = arg.split("-");
 		String name = args[0];
@@ -53,4 +54,8 @@ public class User {
 		User user = new User(name, email, username);
 		return user;
 	}
+=======
+
+	
+>>>>>>> 1d3fc9ba572430c02bf9b4cfb988ebb1ca1cfb02
 }

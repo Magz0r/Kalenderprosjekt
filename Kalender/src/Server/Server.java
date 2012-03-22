@@ -1,8 +1,7 @@
 package Server;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;  
+import java.util.ArrayList; 
 import java.util.List;    
 
 import Logic.Appointment;
@@ -10,6 +9,7 @@ import Logic.Date;
 import Logic.Notification;
 import Logic.Room;
 import Logic.User;
+import Server.Database;
 
 public class Server {
 	

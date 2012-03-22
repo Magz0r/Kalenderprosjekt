@@ -6,6 +6,8 @@ public class Date {
 
 	private long timestamp;
 	private String timeString;
+	private String date;
+	
 	
 	public Date(int year, int month, int day, int hour, int minutes) {
 		
@@ -13,7 +15,7 @@ public class Date {
 		cal.set(year, month, day, hour, minutes, 0);
 		timestamp = cal.getTimeInMillis();
 		timeString = year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":00";
-		
+		date = day + ". " + month + ". " + year;
 	}
 
 	public long getTimestamp() {
@@ -21,6 +23,9 @@ public class Date {
 	}
 	public String getTimeString() {
 		return timeString;
+	}
+	public String getDate() {
+		return date;
 	}
 	public static Date toDate(String dateString) {
 		String[] ar = dateString.split(" ");
@@ -34,6 +39,6 @@ public class Date {
 		Date output = new Date(year, month, day, hour, minute);
 		return output;
 	}
-	
+
 	
 }

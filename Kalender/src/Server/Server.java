@@ -23,13 +23,14 @@ public class Server {
 		commandList.add("delappointment");
 		commandList.add("editappointment");
 		commandList.add("setNotificationRead");
-		
+		commandList.add("getAppointmentsForUser");
 		
 //		interpretInput("login#Tandberg,123");
 //		interpretInput("addappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0");
 //		interpretInput("delappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0");
 //		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Kjel-200,0");
-		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
+//		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
+		interpretInput("getAppointmentsForUser#OlaN");
 	}
 	static void interpretInput(String input) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		//Splitter command til string og args til string[]
@@ -103,6 +104,12 @@ public class Server {
 			String tekst = args[1];
 			Notification notification = new Notification(user, tekst);
 			Database.setNotificationRead(notification, true);
+			break;
+		}
+		case 5: {
+			String username = args[0];
+			ArrayList<Appointment> appointments = Database.getAppointmentsForUser(username);
+			System.out.println(appointments.get(0));
 			break;
 		}
 		}

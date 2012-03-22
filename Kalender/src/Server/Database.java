@@ -187,7 +187,7 @@ public class Database {
 		}
 		return null;
 	}
-	private static Date toDate(String dateString) {
+	public static Date toDate(String dateString) {
 		String[] ar = dateString.split(" ");
 		String[] d = ar[0].split("-");
 		String[] t = ar[1].split(":");
@@ -254,10 +254,28 @@ public class Database {
 		close();
 		return output;
 	}
+	public static ArrayList<Room> getAvailableRooms(int capacity,Date starttime, Date endtime) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT room.id, room.capacity FROM room LEFT JOIN appointment ON room.id=appointment.room_id WHERE appointment.room_id IS NULL OR start<'" + starttime.getTimeString() + "'");
+		ArrayList<Room> output = new ArrayList<Room>();
+		while(rs.next()) {
+			Room room = new Room(rs.getString("id"),rs.getInt("capacity"));
+			output.add(room);
+		}
+		close();
+		return output;
+	}
 	public static void addUser(User user, String password) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();
 		s.executeUpdate("INSERT INTO user (username,name,email,password) VALUES ('" + user.getUsername() + "', '" + user.getName() + "', '" + user.getEmail() + "', '" + password + "')");
+		close();
+	}
+	public static void addRoom(Room room) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		s.executeUpdate("INSERT INTO room (id,capacity) VALUES ('" + room.getName() + "', '" + room.getCapasity() + "')");
 		close();
 	}
 	

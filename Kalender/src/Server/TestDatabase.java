@@ -21,7 +21,10 @@ public class TestDatabase {
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
-			Database.addUser(user, "ABC");
+			ArrayList<Room> al = Database.getAvailableRooms(5, new Date(2002,1,1,13,00), new Date(2002,1,1,14,00));
+			for(int i = 0;i<al.size();i++) {
+				System.out.println(al.get(i).getName());
+			}
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

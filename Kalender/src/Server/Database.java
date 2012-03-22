@@ -245,7 +245,7 @@ public class Database {
 	public static ArrayList<Room> getAvailableRooms(int capacity,Date starttime, Date endtime) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();
-		ResultSet rs = s.executeQuery("SELECT  * FROM room WHERE id NOT IN ( SELECT room.id FROM room, appointment WHERE appointment.room_id = room.id AND start >= '" + starttime.getTimeString() +"' AND end <= '" + endtime.getTimeString() +  "')");
+		ResultSet rs = s.executeQuery("SELECT  * FROM room WHERE id NOT IN ( SELECT room.id FROM room, appointment WHERE appointment.room_id = room.id AND start >= '" + starttime.getTimeString() +"' AND end <= '" + endtime.getTimeString() +  "') AND capacity>='" + capacity + "'");
 		ArrayList<Room> output = new ArrayList<Room>();
 		while(rs.next()) {
 			Room room = new Room(rs.getString("id"),rs.getInt("capacity"));

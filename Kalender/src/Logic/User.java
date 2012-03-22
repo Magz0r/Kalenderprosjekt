@@ -45,7 +45,7 @@ public class User {
 	public void removeNotification(Notification notification) {
 		notifications.remove(notification);
 	}
-	public User toUser(String arg){
+	public static User toUser(String arg){
 		String[] args = arg.split("-");
 		String name = args[0];
 		String email = args[1];

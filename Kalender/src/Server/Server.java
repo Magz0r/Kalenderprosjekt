@@ -7,6 +7,7 @@ import java.util.List;
 
 import Logic.Appointment;
 import Logic.Date;
+import Logic.Room;
 import Logic.User;
 
 public class Server {
@@ -45,13 +46,14 @@ public class Server {
 			break;
 		}
 		case 1 :{ //addappointment
-			Date start = Database.toDate(args[0]);
-			Date end = Database.toDate(args[1]);
+			Date start = Date.toDate(args[0]);
+			Date end = Date.toDate(args[1]);
 			String title = args[2];
 			String description = args[3];
-			User owner ;
-			
-			
+			User owner = User.toUser(args[4]);
+			Room room = Room.toRoom(args[5]);
+			boolean hidden = Boolean.parseBoolean(args[6]);
+			Appointment appointment = new Appointment(room, start, end, owner, title, description, hidden);
 			break;
 		}
 		case 2 :{

@@ -35,4 +35,11 @@ public class Room {
 	public void setAvailable(boolean available){
 		this.available = available;
 	}
+	public static Room toRoom(String arg){
+		String[] args = arg.split("-");
+		String name = args[0];
+		int capasity = Integer.parseInt(args[1]);
+		Room room = new Room(name, capasity);
+		return room;
+	}
 }

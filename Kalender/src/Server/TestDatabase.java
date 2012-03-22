@@ -20,22 +20,7 @@ public class TestDatabase {
 		User user = new User("Test","test@stes.test","tandberg");
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
-		try {
-			System.out.println(Database.getNotifications("tandberg").get(0).getText());
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		/*
+		
 		try {
 			//Database.editAppointment(appointment, appointment2);
 			//Database.addAppointment(appointment);
@@ -44,7 +29,7 @@ public class TestDatabase {
 			//Database.setNotificationRead(new Notification(user, "Test"), true);
 			//System.out.print(Database.login("tandberg", "1234"));
 			ArrayList<Appointment> al = new ArrayList<Appointment>();
-			al = Database.getAppointmentsForUser("OlaN");
+			al = Database.getUnansweredAppointmentsForUser("OlaN");
 			for(int i = 0;i<al.size();i++) {
 				System.out.println(al.get(i).getTitle());
 				System.out.println(al.get(i).getDescription());
@@ -67,7 +52,7 @@ public class TestDatabase {
 			System.out.println("Crash");
 			e.printStackTrace();
 		}
-		*/
+		
 	}
 
 }

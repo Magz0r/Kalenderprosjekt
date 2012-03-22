@@ -212,4 +212,35 @@ public class Database {
 		close();
 		return output;
 	}
+	public static ArrayList<Appointment> getUnansweredAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		ArrayList<Appointment> output = new ArrayList<Appointment>();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "' AND attending IS NULL");
+		while(rs.next()) {
+			Appointment a = new Appointment();
+			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
+			a.setStart(toDate(rs.getString("start")));
+			a.setEnd(toDate(rs.getString("end")));
+			a.setOwner(getUser(rs.getString("user_username")));
+			a.setTitle(rs.getString("title"));
+			a.setDescription(rs.getString("description"));
+			if(rs.getString("private").equals("1")) {
+				a.setHidden(true);
+			}
+			else {
+				a.setHidden(false);
+			}
+			String id = rs.getString("id");
+			System.out.println(id);
+			ArrayList<User> al = getUsersByAppointment(id);
+			for(int i = 0;i<al.size();i++) {
+				a.addAttending(al.get(i));
+			}
+			output.add(a);
+		}
+		close();
+		return output;
+	}
+	
 }

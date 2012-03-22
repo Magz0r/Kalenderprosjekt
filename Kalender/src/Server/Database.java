@@ -157,7 +157,6 @@ public class Database {
 				a.setHidden(false);
 			}
 			String id = rs.getString("id");
-			System.out.println(id);
 			ArrayList<User> al = getUsersByAppointment(id);
 			for(int i = 0;i<al.size();i++) {
 				a.addAttending(al.get(i));
@@ -173,7 +172,7 @@ public class Database {
 		ArrayList<User> output = new ArrayList<User>();
 		while(rs.next()) {
 			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
-			System.out.println("getUsers" + user.getName());
+			
 			output.add(user);
 		}
 		return output;
@@ -220,7 +219,7 @@ public class Database {
 				a.setHidden(false);
 			}
 			String id = rs.getString("id");
-			System.out.println(id);
+		
 			ArrayList<User> al = getUsersByAppointment(id);
 			for(int i = 0;i<al.size();i++) {
 				a.addAttending(al.get(i));

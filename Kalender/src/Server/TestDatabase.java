@@ -17,10 +17,26 @@ public class TestDatabase {
 	public static void main(String[] args) {
 		Appointment appointment = new Appointment(new Room("R41", 5),new Date(2000,1,1, 12, 00),new Date(2000,1,1,13,00),new User("Name1","test@test.no","Test"),"Testavtale","Testinnhold",false);
 		Appointment appointment2 = new Appointment(new Room("R40", 4),new Date(2000,1,1, 12, 00),new Date(2000,1,1,13,00),new User("Name1","test@test.no","Test"),"Testavtale","Testinnhold",false);
-		User user = new User("Test","test@stes.test","tandberg");
+		User user = new User("Navn2","navn@test.test2","Brukernavn2");
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
+		try {
+			Database.addUser(user, "ABC");
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		/*
 		try {
 			//Database.editAppointment(appointment, appointment2);
 			//Database.addAppointment(appointment);
@@ -52,7 +68,7 @@ public class TestDatabase {
 			System.out.println("Crash");
 			e.printStackTrace();
 		}
-		
+		*/
 	}
 
 }

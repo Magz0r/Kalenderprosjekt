@@ -242,5 +242,23 @@ public class Database {
 		close();
 		return output;
 	}
+	public static ArrayList<User> getAllUsers() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM user");
+		ArrayList<User> output = new ArrayList<User>();
+		while(rs.next()) {
+			User user = new User(rs.getString("name"),rs.getString("email"), rs.getString("username"));
+			output.add(user);
+		}
+		close();
+		return output;
+	}
+	public static void addUser(User user, String password) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		s.executeUpdate("INSERT INTO user (username,name,email,password) VALUES ('" + user.getUsername() + "', '" + user.getName() + "', '" + user.getEmail() + "', '" + password + "')");
+		close();
+	}
 	
 }

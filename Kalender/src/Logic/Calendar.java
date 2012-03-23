@@ -17,6 +17,7 @@ public class Calendar {
 	public void deleteAppointment(Appointment appointment) {
 		list.remove(appointment);
 	}
+
 	
 	
 }

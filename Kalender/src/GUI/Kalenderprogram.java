@@ -1,35 +1,23 @@
 package GUI;
 
 import javax.swing.*;
-
 import javax.swing.event.*;
 import javax.swing.table.*;
-
-import GUI.Kalenderprogram.btnNext_Action;
-import GUI.Kalenderprogram.btnPrev_Action;
-import GUI.Kalenderprogram.cmbYear_Action;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class GUI {
-	
-	static JFrame frame;
-	static Container pane;
-	static JButton opprett, loggUt;
-	static JScrollPane scrNot;
-	static JTabbedPane notify;
-	static JPanel kalender, mine, nye;
+public class Kalenderprogram {
 	static JLabel lblMonth, lblYear;
 	static JButton btnNext, btnPrev;
 	static JTable tblCalendar;
 	static JComboBox cmbYear;
+	static JFrame frmMain;
+	static Container pane;
 	static DefaultTableModel mtblCalendar; //Table model
 	static JScrollPane stblCalendar; //The scrollpane
 	static JPanel pnlCalendar; //The panel
 	static int realDay, realMonth, realYear, currentMonth, currentYear, realWeek, currentWeek;
-	
 	
 	public static void main(String[] args) {
 		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
@@ -38,36 +26,15 @@ public class GUI {
 		catch (IllegalAccessException e) {}
 		catch (UnsupportedLookAndFeelException e) {}
 		
-		frame = new JFrame("Kalender");
-		frame.setSize(812, 768);
-		pane = frame.getContentPane();
+		frmMain = new JFrame("Calendar application");
+		frmMain.setSize(375, 375);
+		pane = frmMain.getContentPane();
 		pane.setLayout(null);
-		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.setResizable(false);
+		frmMain.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
-		opprett = new JButton("Opprett");
-		loggUt = new JButton("Logg ut");
-		scrNot = new JScrollPane();
-		kalender = new JPanel(null);
-		mine = new JPanel(null);
-		nye = new JPanel(null);
-		
-		pane.add(kalender);
-		pane.add(opprett);
-		pane.add(loggUt);
-		pane.add(scrNot);
-		
-		opprett.setBounds(10, 200, 225, 64);
-		loggUt.setBounds(689, 6, 160-loggUt.getPreferredSize().width/2, 25);
-		notify = new JTabbedPane();
-		notify.setBounds(10, 299, 224, 441);
-		frame.getContentPane().add(notify);
-		notify.addTab("Mine", mine);
-		notify.addTab("Nye", nye);
 		
 		lblMonth = new JLabel ("1");
-		lblYear = new JLabel ("Bytt Œr:");
+		lblYear = new JLabel ("Change year:");
 		cmbYear = new JComboBox();
 		btnPrev = new JButton ("<<");
 		btnNext = new JButton (">>");
@@ -87,14 +54,16 @@ public class GUI {
 		pnlCalendar.add(stblCalendar);
 
 		//Set bounds
-		pnlCalendar.setBounds(246, 200, 557, 540);
-		lblMonth.setBounds(227, 28, 48, 16);
-		lblYear.setBounds(10, 514, 110, 20);
-		cmbYear.setBounds(441, 515, 100, 20);
+		pnlCalendar.setBounds(0, 0, 330, 350);
+		lblMonth.setBounds(160-lblMonth.getPreferredSize().width/2, 25, 100, 25);
+		lblYear.setBounds(10, 305, 110, 20);
+		cmbYear.setBounds(230, 305, 100, 20);
 		btnPrev.setBounds(10, 25, 50, 25);
-		btnNext.setBounds(491, 25, 50, 25);
-		stblCalendar.setBounds(10, 50, 531, 452);
+		btnNext.setBounds(260, 25, 50, 25);
+		stblCalendar.setBounds(10, 50, 300, 250);
 
+		frmMain.setResizable(false);
+		frmMain.setVisible(true);
 
 		//Get real month/year
 		GregorianCalendar cal = new GregorianCalendar(); //Create calendar
@@ -146,6 +115,8 @@ public class GUI {
 		btnNext.addActionListener(new btnNext_Action());
 		cmbYear.addActionListener(new cmbYear_Action());
 		
+		
+		
 	}
 	public static void refreshCalendar(int month, int year, int week){
 		String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -156,6 +127,7 @@ public class GUI {
 		if (week == 0 && year <= realYear-10){btnPrev.setEnabled(false);} //Too early
 		if (week == 51 && year >= realYear+100){btnNext.setEnabled(false);} //Too late
 		lblMonth.setText("Uke: "+(week+1)); //Refresh the month label (at the top)
+		lblMonth.setBounds(160-lblMonth.getPreferredSize().width/2, 25, 180, 25); //Re-align label with calendar
 		cmbYear.setSelectedItem(String.valueOf(year)); //Select the correct year in the combo box
 		
 		//Get first day of month and number of days

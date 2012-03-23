@@ -30,7 +30,11 @@ public class Appointment {
 		hidden = true;
 		attendies = new ArrayList<User>();
 	}
-
+	
+	public Appointment() {
+		attendies = new ArrayList<User>();
+	}
+	
 	public Room getRoom() {
 		return room;
 	}
@@ -97,6 +101,9 @@ public class Appointment {
 	
 	public void removeAttending(User user) {
 		attendies.remove(user);
+	}
+	public void removeAttendings(){
+		attendies.clear();
 	}
 	
 }

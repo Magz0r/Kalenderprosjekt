@@ -64,6 +64,9 @@ public class Database {
 	connect();
 	Statement s = con.createStatement();
 	s.executeUpdate("DELETE FROM appointment WHERE id='" + getAppointmentId(appointment) + "'");
+	for(int i = 0; i<appointment.getAttendies().size(); i++) {
+		addNotification(appointment.getAttendies().get(i), "Avtalen med tittel " + appointment.getTitle() + " er blitt slettet fra din kalender");
+	}
 	close();
 	}
 	private static void setAppointmentVars(Appointment appointment) {
@@ -102,11 +105,20 @@ public class Database {
 		}
 		Statement s = con.createStatement();
 		s.executeUpdate("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");
+		for(int i = 0; i<oldAppointment.getAttendies().size();i++) {
+			addNotification(oldAppointment.getAttendies().get(i), "Avtalen med tittel " + oldAppointment.getTitle() + " er blitt endret");
+		}
 		close();
 	}
 	public static void addNotification(User user, String notification) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
-		addNotificationStatus(user, notification, 0);
+		try {
+			addNotificationStatus(user, notification, 0);
+		}
+		catch(SQLException s) {
+			
+		}
+		
 		close();
 	}
 	public static void setNotificationRead(Notification notification, boolean read) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {

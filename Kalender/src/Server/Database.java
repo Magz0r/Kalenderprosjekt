@@ -55,6 +55,9 @@ public class Database {
 				s.executeUpdate("INSERT INTO user_has_appointment (user_username, appointment_id) VALUES ('" + appointment.getAttendies().get(i).getUsername() + "', " + id + ")");
 			}
 		}
+		for(int i = 0; i<appointment.getAttendies().size();i++) {
+			addNotification(appointment.getAttendies().get(i), "En avtale med tittel " + appointment.getTitle() + " er blitt lagt til din kalender");
+		}
 		close();
 	}
 	public static void delAppointment(Appointment appointment) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {

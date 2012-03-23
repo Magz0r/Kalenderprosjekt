@@ -87,6 +87,8 @@ public class MeetingView extends JPanel {
 		c = new GridBagConstraints();
 		
 		c.insets = new Insets(3,3,3,3);
+		c.anchor = GridBagConstraints.WEST;
+		
 		c.ipadx = 30;
 		c.gridx = 1;
 		c.gridy = 0;

@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -22,7 +24,7 @@ import Logic.Date;
 import Logic.Room;
 import Logic.User;
 
-public class MeetingView extends JPanel {
+public class MeetingView extends JPanel implements ActionListener {
 
 	private JFrame frame;
 	private JLabel titleLabel, dateLabel, timeLabel, roomLabel, descriptionLabel, attendingLabel, notAttendingLabel, waitingLabel, contentTimeLabel, contentRoomLabel, contentDateLabel;
@@ -54,7 +56,7 @@ public class MeetingView extends JPanel {
 		
 		//area
 		descriptionArea = new JTextArea();
-		descriptionArea.setPreferredSize(new Dimension(300, 250));
+		descriptionArea.setPreferredSize(new Dimension(300, 270));
 		descriptionArea.setText(appointment.getDescription());
 		descriptionArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		descriptionArea.setLineWrap(true);
@@ -63,8 +65,14 @@ public class MeetingView extends JPanel {
 		
 		//buttons
 		editButton = new JButton("Rediger");
+		editButton.addActionListener(this);
+		editButton.setActionCommand("edit");
 		attendingButton = new JButton("Deltar");
+		attendingButton.addActionListener(this);
+		attendingButton.setActionCommand("attending");
 		notAttendingButton = new JButton("Deltar ikke");
+		notAttendingButton.addActionListener(this);
+		notAttendingButton.setActionCommand("notAttending");
 		
 		//listmodel
 		attendingListModel = new DefaultListModel();
@@ -76,8 +84,12 @@ public class MeetingView extends JPanel {
 		
 		//lists
 		attendingList = new JList(attendingListModel);
+		attendingList.setBackground(frame.getBackground());
 		notAttendingList = new JList(notAttendingListModel);
+		notAttendingList.setBackground(frame.getBackground());
 		waitingList = new JList(waitingListModel);
+		waitingList.setBackground(frame.getBackground());
+		
 		attendingList.setPreferredSize(new Dimension(100, 100));
 		notAttendingList.setPreferredSize(new Dimension(100, 100));
 		waitingList.setPreferredSize(new Dimension(100, 100));
@@ -87,7 +99,7 @@ public class MeetingView extends JPanel {
 		c = new GridBagConstraints();
 		
 		c.insets = new Insets(3,3,3,3);
-		c.anchor = GridBagConstraints.WEST;
+		c.anchor = GridBagConstraints.NORTHWEST;
 		
 		c.ipadx = 30;
 		c.gridx = 1;
@@ -123,24 +135,45 @@ public class MeetingView extends JPanel {
 		add(new JScrollPane(descriptionArea), c);
 
 		
+		JPanel listframe = new JPanel();
+		GridBagConstraints a = new GridBagConstraints();
+		listframe.setLayout(new GridBagLayout());
+		a.gridx = 0;
+		a.gridy = 0;
+		a.anchor = GridBagConstraints.NORTHWEST;
+		listframe.add(attendingLabel, a);
+
+		a.gridy++;
+		listframe.add(attendingList, a);
+		a.gridy++;
+		listframe.add(notAttendingLabel, a);
+		a.gridy++;
+		listframe.add(notAttendingList, a);
+		a.gridy++;
+		listframe.add(waitingLabel, a);
+		a.gridy++;
+		listframe.add(waitingList, a);
+		
 		c.gridx++;
 		c.gridy = 1;
-		add(attendingLabel, c);
+		c.fill = GridBagConstraints.VERTICAL;
+		c.gridheight = 4;
+		add(listframe, c);
 		
-		c.gridy++;
-		add(attendingList, c);
 		
-		c.gridy++;
-		add(notAttendingLabel, c);
 		
-		c.gridy++;
-		add(notAttendingList, c);
+		c.gridx = 0;
+		c.gridy = 5;
+		add(attendingButton, c);
 		
-		c.gridy++;
-		add(waitingLabel, c);
-
-		c.gridy++;
-		add(waitingList, c);
+		c.gridx++;
+		add(notAttendingButton, c);
+		
+		c.gridx++;
+		add(editButton, c);
+		
+		
+		
 		
 		
 		setVisible(true);
@@ -182,5 +215,19 @@ public class MeetingView extends JPanel {
 		
 		Appointment appointment = new Appointment(new Room("R60", 3), start, end, owner, "Avtale nr 12", lorem, false);
 		new MeetingView(appointment);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getActionCommand().equals("edit")) {
+			//edit
+		}
+		else if(e.getActionCommand().equals("attending")) {
+			//attending
+		}
+		else if(e.getActionCommand().equals("notAttending")) {
+			//not attending
+		}
 	}
 }

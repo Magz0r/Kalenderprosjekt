@@ -15,13 +15,13 @@ public class TestDatabase {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Appointment appointment = new Appointment(new Room("R140", 5),new Date(2002,2,2, 12, 00),new Date(2002,2,2,13,00),new User("Owner1","owner@test.no","Owner"),"Notetest","TestinnholdNotetest",false);
+		Appointment appointment = new Appointment(new Room("R40", 5),new Date(2002,1,1, 12, 00),new Date(2002,1,1,13,00),new User("Test2","owner@test.no","Test2"),"Testavtale2","Testinnhold2",false);
 		//Appointment appointment2 = new Appointment(new Room("R40", 4),new Date(2002,2,2, 12, 00),new Date(2002,2,2,13,00),new User("Name1","test@test.no","Test"),"Testavtale8","Testinnhold8",false);
-		User user = new User("Navn2","navn@test.test2","Brukernavn2");
+		User user = new User("Ola Nordmann","ola@norge.no","OlaN");
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
-			Database.addAppointment(appointment);
+			Database.setAttending(user, appointment, "null");
 		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

@@ -280,5 +280,12 @@ public class Database {
 		s.executeUpdate("INSERT INTO room (id,capacity) VALUES ('" + room.getName() + "', '" + room.getCapasity() + "')");
 		close();
 	}
+	//Attending takes "0", "1" or "null"
+	public static void setAttending(User user, Appointment appointment, String attending) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		s.executeUpdate("UPDATE user_has_appointment SET attending=" + attending + " WHERE user_username='" + user.getUsername() + "' AND appointment_id='" + getAppointmentId(appointment) + "'");
+		close();
+	}
 	
 }

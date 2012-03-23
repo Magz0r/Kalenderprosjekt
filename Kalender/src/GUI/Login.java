@@ -90,37 +90,32 @@ public class Login extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("login")) {
-
-			String username = usernameField.getText();
-			String password = passwordField.getText();
-
-
-
-//			if(Database.login(username, password)) {
-//				new Kalenderprogram(username);
-//			}
-//			else {
-//				JOptionPane.showMessageDialog(this, "Feil brukernavn / passord");
-//			}
-
+			login();
 		}
+	}
+	
+	public void login() {
+		String username = usernameField.getText();
+		String password = passwordField.getText();
+		
+		if (true /* login failed */) {
+			JOptionPane.showMessageDialog(null, "Brukernavnet eller passordet er feil.", "Ugyldig brukernavn/passord", JOptionPane.ERROR_MESSAGE);
+		}
+
+
+
+//		if(Database.login(username, password)) {
+//			new Kalenderprogram(username);
+//		}
+//		else {
+//			JOptionPane.showMessageDialog(this, "Feil brukernavn / passord");
+//		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		if(arg0.getKeyChar() == KeyEvent.VK_ENTER) {
-
-			String username = usernameField.getText();
-			String password = passwordField.getText();
-
-
-//			if(Database.login(username, password)) {
-//				new Kalenderprogram(username);
-//			}
-//			else {
-//				JOptionPane.showMessageDialog(this, "Feil brukernavn / passord");
-//			}
-
+			login();
 		}
 	} 
 

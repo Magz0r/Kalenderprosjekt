@@ -35,7 +35,7 @@ public class MeetingView extends JPanel implements ActionListener {
 	private DefaultListModel attendingListModel, notAttendingListModel, waitingListModel;
 	private Appointment model;
 	
-	public MeetingView(Appointment appointment) {
+	public MeetingView(Appointment appointment, User user) {
 		model = appointment;
 		frame = new JFrame();
 		
@@ -204,6 +204,7 @@ public class MeetingView extends JPanel implements ActionListener {
 		attendingListModel.addElement("test2");
 		attendingListModel.addElement("test3");
 	}
+	
 
 	public static void main(String[] args) {
 
@@ -214,7 +215,7 @@ public class MeetingView extends JPanel implements ActionListener {
 		String lorem = "Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien. Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet, da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg til å bestå gjennom fem århundrer også tålt spranget over til elektronisk typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp Lorem Ipsum for dummytekst.";
 		
 		Appointment appointment = new Appointment(new Room("R60", 3), start, end, owner, "Avtale nr 12", lorem, false);
-		new MeetingView(appointment);
+		new MeetingView(appointment, owner);
 	}
 
 	@Override

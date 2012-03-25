@@ -42,4 +42,8 @@ public class Room {
 		Room room = new Room(name, capasity);
 		return room;
 	}
+	
+	public String toString() {
+		return name + " - " + capasity;
+	}
 }

@@ -30,6 +30,7 @@ public class Login extends JPanel implements ActionListener, KeyListener {
 	private JPasswordField passwordField;
 	private GridBagConstraints c;
 	private JButton confirm;
+	private GUI start;
 
 	public Login() {
 
@@ -92,25 +93,38 @@ public class Login extends JPanel implements ActionListener, KeyListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("login")) {
 			login();
+			frame.setVisible(false);
 		}
 	}
 	
 	public void login() {
 		String username = usernameField.getText();
 		String password = passwordField.getText();
-		
-		if (true /* login failed */) {
-			JOptionPane.showMessageDialog(null, "Brukernavnet eller passordet er feil.", "Ugyldig brukernavn/passord", JOptionPane.ERROR_MESSAGE);
+
+
+		try {
+			if(Database.login(username, password)) {
+				start = new GUI(username);
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "Feil brukernavn / passord");
+			}
+		} catch (HeadlessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-
-
-//		if(Database.login(username, password)) {
-//			new Kalenderprogram(username);
-//		}
-//		else {
-//			JOptionPane.showMessageDialog(this, "Feil brukernavn / passord");
-//		}
 	}
 
 	@Override

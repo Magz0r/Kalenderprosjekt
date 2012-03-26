@@ -7,6 +7,7 @@ public class Date {
 	private long timestamp;
 	private String timeString;
 	private String date;
+	private String clock;
 	
 	
 	public Date(int year, int month, int day, int hour, int minutes) {
@@ -16,6 +17,10 @@ public class Date {
 		timestamp = cal.getTimeInMillis();
 		timeString = year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":00";
 		date = day + ". " + month + ". " + year;
+		clock = hour+":"+minutes;
+		if(minutes == 0) {
+			clock += "0";
+		}
 	}
 
 	public long getTimestamp() {
@@ -27,6 +32,10 @@ public class Date {
 	public String getDate() {
 		return date;
 	}
+	public String getClock() {
+		return clock;
+	}
+	
 	public static Date toDate(String dateString) {
 		String[] ar = dateString.split(" ");
 		String[] d = ar[0].split("-");

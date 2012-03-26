@@ -38,15 +38,18 @@ public class MeetingView extends JPanel implements ActionListener {
 	public MeetingView(Appointment appointment, User user) {
 		model = appointment;
 		frame = new JFrame();
-		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
 		//labels
 		titleLabel = new JLabel(appointment.getTitle());
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
 		dateLabel = new JLabel("Dato:");
-		contentDateLabel = new JLabel(appointment.getStart().getDate());
+		if(!appointment.getStart().getDate().equals(appointment.getEnd().getDate())) {
+			contentDateLabel = new JLabel(appointment.getStart().getDate() + " - " + appointment.getEnd().getDate());
+		} else {
+			contentDateLabel = new JLabel(appointment.getStart().getDate());
+		}
 		timeLabel = new JLabel("Tid:");
-		contentTimeLabel = new JLabel("XX:XX - YY:YY");
+		contentTimeLabel = new JLabel(appointment.getStart().getClock() +" - " + appointment.getEnd().getClock());
 		roomLabel = new JLabel("Sted:");
 		contentRoomLabel = new JLabel(appointment.getRoom().getName());
 		descriptionLabel = new JLabel("Beskrivelse");
@@ -210,7 +213,7 @@ public class MeetingView extends JPanel implements ActionListener {
 	public static void main(String[] args) {
 
 		Date start = new Date(2012, 4, 4, 12, 00);
-		Date end = new Date(2012, 4, 4, 13, 00);
+		Date end = new Date(2012, 4, 5, 13, 00);
 		User owner = new User("tandberg", "tandeey@gmail.com", "tandberg");
 		
 		String lorem = "Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien. Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet, da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg til å bestå gjennom fem århundrer også tålt spranget over til elektronisk typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp Lorem Ipsum for dummytekst.";

@@ -212,6 +212,25 @@ public class Database {
 		}
 		return output;
 	}
+	public static ArrayList<User> getUsersByAppointmentAndStatus(Appointment appointment, int status) throws SQLException {
+		Statement s = con.createStatement();
+		String statusString;
+		if(status == 0) {
+			statusString = "= 0";
+		} else if(status == 1) {
+			statusString = "= 1";
+		} else {
+			statusString = " IS NULL";
+		}
+		ResultSet rs = s.executeQuery("SELECT username, name, email FROM user,user_has_appointment WHERE user_username=username AND appointment_id='" + getAppointmentId(appointment) + "' AND attending" +  statusString);
+		ArrayList<User> output = new ArrayList<User>();
+		while(rs.next()) {
+			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
+			
+			output.add(user);
+		}
+		return output;
+	}
 	public static User getUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();
@@ -285,6 +304,7 @@ public class Database {
 		close();
 		return output;
 	}
+	
 	public static ArrayList<Room> getAvailableRooms(int capacity,Date starttime, Date endtime) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();

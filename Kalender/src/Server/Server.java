@@ -11,6 +11,7 @@ import Logic.Room;
 import Logic.User;
 import Server.Database;
 
+
 public class Server {
 	
 	static List<String> commandList;
@@ -36,7 +37,7 @@ public class Server {
 //		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Kjel-200,0");
 //		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
 //		interpretInput("getAppointmentsForUser#OlaN");
-//		interpretInput("getUnansweredAppointmentsForUser#OlaN");
+//		interpretInput("getAppointmentsForUserByStatus#OlaN,1");
 //		interpretInput("getAllUsers");
 //		interpretInput("getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00");
 //		interpretInput("addUser#Vegard-vegard.holter@gmail.com-vegaholt,123");
@@ -64,7 +65,7 @@ public class Server {
 			Database.login(args[0], args[1]);
 			break;
 		}
-		case 1 :{ //addappointment
+		case 1 :{ //addappointment ok
 			Date start = Date.toDate(args[0]);
 			Date end = Date.toDate(args[1]);
 			String title = args[2];
@@ -77,7 +78,7 @@ public class Server {
 			Database.addAppointment(appointment);
 			break;
 		}
-		case 2 :{ //delappointment
+		case 2 :{ //delappointment ok
 			Date start = Date.toDate(args[0]);
 			Date end = Date.toDate(args[1]);
 			String title = args[2];
@@ -90,7 +91,7 @@ public class Server {
 			Database.delAppointment(appointment);
 			break;
 		}
-		case 3: { //editAppointment
+		case 3: { //editAppointment ok
 			Date OLDstart = Date.toDate(args[0]);
 			Date OLDend = Date.toDate(args[1]);
 			String OLDtitle = args[2];
@@ -112,42 +113,67 @@ public class Server {
 			Database.editAppointment(OLDappointment, appointment);
 			break;
 		}
-		case 4: { //setNotificationRead
+		case 4: { //setNotificationRead ok
 			User user = User.toUser(args[0]);
 			String tekst = args[1];
 			Notification notification = new Notification(user, tekst);
 			Database.setNotificationRead(notification, true);
 			break;
 		}
-		case 5: { //getAppointmentsForUser
+		case 5: { //getAppointmentsForUser mangler å sende
 			String username = args[0];
 			ArrayList<Appointment> appointments = Database.getAppointmentsForUser(username);
 			//lag format for sending til client
+			StringBuilder builder = new StringBuilder();
+			for(Appointment app : appointments){
+				builder.append(app.getServerString() + "¤");
+			}
+			//sendes til client
+			
+			
 			break;
 		}
-		case 6: { //getUnansweredAppointmentsForUser
+		case 6: { //getAppointmentsForUserByStatus må sende + inneholde status
 			String username = args[0];
-			ArrayList<Appointment> appointments = Database.getUnansweredAppointmentsForUser(username);
+			int status = Integer.parseInt(args[1]);
+			ArrayList<Appointment> appointments = Database.getAppointmentsForUserByStatus(username, status);
+			
 			break;
 		}
-		case 7: { //getAllUsers
+		case 7: { //getAllUsers må sendes
 			ArrayList<User> users = Database.getAllUsers();
+			
+			StringBuilder builder = new StringBuilder();
+			for(User user : users){
+				builder.append(user.getServerString() + "¤");
+			}
+			//sendes til client
+			
+			
 			break;
 		}
-		case 8: { //getAvailableRooms
+		case 8: { //getAvailableRooms må sendes
 			int capasity = Integer.parseInt(args[0]);
 			Date start = Date.toDate(args[1]);
 			Date end = Date.toDate(args[2]);
 			ArrayList<Room> rooms = Database.getAvailableRooms(capasity, start, end);
+			
+			StringBuilder builder = new StringBuilder();
+			for(Room room : rooms){
+				builder.append(room.toString() + "¤");
+			}
+			//sendes til client
+			
+			
 			break;
 		}
-		case 9: { //addUser
+		case 9: { //addUser ok
 			User user = User.toUser(args[0]);
 			String password = args[1];
 			Database.addUser(user, password);
 			break;
 		}
-		case 10: { //addRoom
+		case 10: { //addRoom ok
 			Room room = Room.toRoom(args[0]);
 			Database.addRoom(room);
 			break;
@@ -155,7 +181,6 @@ public class Server {
 		}
 	}
 
-	
 	static void print(String command, String[] args){
 		System.out.println("Command: " + command);
 		System.out.println("Args: ");

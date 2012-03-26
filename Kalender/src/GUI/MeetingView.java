@@ -8,6 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -15,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -23,6 +26,7 @@ import Logic.Appointment;
 import Logic.Date;
 import Logic.Room;
 import Logic.User;
+import Server.Database;
 
 public class MeetingView extends JPanel implements ActionListener {
 
@@ -34,8 +38,11 @@ public class MeetingView extends JPanel implements ActionListener {
 	private JList attendingList, notAttendingList, waitingList;
 	private DefaultListModel attendingListModel, notAttendingListModel, waitingListModel;
 	private Appointment model;
+	private User user;
+	private ArrayList<User> participants, notParticipants, waitingParticipants;
 	
 	public MeetingView(Appointment appointment, User user) {
+		this.user = user;
 		model = appointment;
 		frame = new JFrame();
 		
@@ -189,24 +196,55 @@ public class MeetingView extends JPanel implements ActionListener {
 	}
 	
 	private void fillWaiting() {
-		// TODO Auto-generated method stub
-		waitingListModel.addElement("tregmes1");
-		waitingListModel.addElement("tregmes2");
-		waitingListModel.addElement("tregmes3");
+		try {
+			participants = Database.getUsersByAppointmentAndStatus(model, 2);
+		} catch (SQLException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		
+		for (User waiting : notParticipants) {
+			waitingListModel.addElement(waiting);
+		}
 	}
 
 	private void fillNotAttending() {
-		// TODO Auto-generated method stub
-		notAttendingListModel.addElement("kjemes1");
-		notAttendingListModel.addElement("kjemes2");
-		notAttendingListModel.addElement("kjemes3");
+		
+		try {
+			notParticipants = Database.getUsersByAppointmentAndStatus(model, 0);
+		} catch (SQLException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		
+		for (User notatten : notParticipants) {
+			notAttendingListModel.addElement(notatten);
+			if(notatten.getUsername().equals(user.getUsername())) {
+				attendingButton.setVisible(false);
+				notAttendingButton.setVisible(false);
+			}
+		}
 	}
 
 	private void fillAttending() {
-		// TODO Auto-generated method stub
-		attendingListModel.addElement("test1");
-		attendingListModel.addElement("test2");
-		attendingListModel.addElement("test3");
+
+		try {
+			waitingParticipants = Database.getUsersByAppointmentAndStatus(model, 1);
+		} catch (SQLException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		
+		for (User atten : waitingParticipants) {
+			attendingListModel.addElement(atten);
+			if(atten.getUsername().equals(user.getUsername())) {
+				attendingButton.setVisible(false);
+				notAttendingButton.setVisible(false);
+			}
+		}
 	}
 	
 
@@ -226,13 +264,35 @@ public class MeetingView extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("edit")) {
-			//edit
+			frame.setVisible(false);
+			new CreateAppointmentGUI(model, user);
 		}
 		else if(e.getActionCommand().equals("attending")) {
-			//attending
+
+			try {
+				Database.setAttending(user, model, "1");
+			} catch (InstantiationException e1) {
+			} catch (IllegalAccessException e1) {
+			} catch (ClassNotFoundException e1) {
+			} catch (SQLException e1) {
+			}
+			JOptionPane.showMessageDialog(this, "Du deltar nå på denne avtalen");
+			attendingButton.setVisible(false);
+			notAttendingButton.setVisible(false);
+			
 		}
 		else if(e.getActionCommand().equals("notAttending")) {
-			//not attending
+
+			try {
+				Database.setAttending(user, model, "0");
+			} catch (InstantiationException e1) {
+			} catch (IllegalAccessException e1) {
+			} catch (ClassNotFoundException e1) {
+			} catch (SQLException e1) {
+			}
+			JOptionPane.showMessageDialog(this, "Du er nå merket som ikke deltakende på denne avtalen");
+			attendingButton.setVisible(false);
+			notAttendingButton.setVisible(false);
 		}
 	}
 }

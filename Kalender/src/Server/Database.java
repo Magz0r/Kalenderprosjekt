@@ -127,7 +127,7 @@ public class Database {
 	private static void delUserHasAppointment(User user, Appointment appointment) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();
-		System.out.println(user.getUsername() + " " + appointment.getTitle());
+		//System.out.println(user.getUsername() + " " + appointment.getTitle());
 		s.executeUpdate("DELETE FROM user_has_appointment WHERE user_username='" + user.getUsername() + "' AND appointment_id='" + getAppointmentId(appointment) + "'");
 	}
 	public static void addNotification(User user, String notification) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -136,7 +136,7 @@ public class Database {
 			addNotificationStatus(user, notification, 0);
 		}
 		catch(SQLException s) {
-			
+			setNotificationRead(new Notification(user,notification), false);
 		}
 		
 		close();
@@ -212,7 +212,9 @@ public class Database {
 		}
 		return output;
 	}
-	public static ArrayList<User> getUsersByAppointmentAndStatus(Appointment appointment, int status) throws SQLException {
+	//Status: 0 = Not attending, 1 = Attending, 2 = Unanswered
+	public static ArrayList<User> getUsersByAppointmentAndStatus(Appointment appointment, int status) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		connect();
 		Statement s = con.createStatement();
 		String statusString;
 		if(status == 0) {
@@ -229,6 +231,7 @@ public class Database {
 			
 			output.add(user);
 		}
+		close();
 		return output;
 	}
 	public static User getUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -254,19 +257,11 @@ public class Database {
 		close();
 		return output;
 	}
-	public static ArrayList<Appointment> getAppointmentsForUserByStatus(String username, int status) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public static ArrayList<Appointment> getUnansweredAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
-		String statusString;
-		if(status == 0) {
-			statusString = "= 0";
-		} else if(status == 1) {
-			statusString = "= 1";
-		} else {
-			statusString = " IS NULL";
-		}
 		ArrayList<Appointment> output = new ArrayList<Appointment>();
 		Statement s = con.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "' AND attending" + statusString);
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "' AND attending IS NULL");
 		while(rs.next()) {
 			Appointment a = new Appointment();
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));

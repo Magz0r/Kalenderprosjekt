@@ -34,61 +34,6 @@ public class TestDatabase {
 		} catch (ClassNotFoundException e1) {
 		} catch (SQLException e1) {
 		}
-		/*
-		try {
-			ArrayList<Room> al = Database.getAvailableRooms(5, new Date(1999,1,1,12,00), new Date(1999,1,1,13,00));
-			for(int i = 0;i<al.size();i++) {
-				System.out.println(al.get(i).getName());
-			}
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		
-		//try {
-			//Database.editAppointment(appointment, appointment2);
-			//Database.addAppointment(appointment);
-			//Database.delAppointment(appointment);
-			//Database.addNotification(user, "Test");
-			//Database.setNotificationRead(new Notification(user, "Test"), true);
-			//System.out.print(Database.login("tandberg", "1234"));
-			/*ArrayList<Appointment> al = new ArrayList<Appointment>();
-			al = Database.getUnansweredAppointmentsForUser("OlaN");
-			for(int i = 0;i<al.size();i++) {
-				System.out.println(al.get(i).getTitle());
-				System.out.println(al.get(i).getDescription());
-				System.out.println(al.get(i).getEnd().getTimeString());
-				System.out.println(al.get(i).getRoom().getName());
-				System.out.println(al.get(i).getStart().getTimeString());
-				System.out.println(al.get(i).getOwner().getName());
-				System.out.println("Test" + al.get(i).getAttendies().get(0).getName());
-			}
-			
-			
-		} catch (SQLException e) {
-			System.out.println("Crash");
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			System.out.println("Crash");
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			System.out.println("Crash");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println("Crash");
-			e.printStackTrace();
-		}
-		*/
 	}
 
 }

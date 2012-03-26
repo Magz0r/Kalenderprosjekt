@@ -154,6 +154,7 @@ public class Server {
 		}
 		}
 	}
+
 	
 	static void print(String command, String[] args){
 		System.out.println("Command: " + command);

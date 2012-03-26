@@ -34,6 +34,7 @@ public class Login extends JPanel implements ActionListener, KeyListener {
 	public Login() {
 
 		frame = new JFrame();
+		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Logg inn");
 
 		usernameField = new JTextField(20);

@@ -53,4 +53,8 @@ public class User {
 		User user = new User(name, email, username);
 		return user;
 	}
+	
+	public String toString() {
+		return name;
+	}
 }

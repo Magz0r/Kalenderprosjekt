@@ -55,9 +55,6 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 	private JPanel visabilityPanel;
 	private MeetingView meet;
 	
-	public static void main(String[] args) {
-		new CreateAppointmentGUI("hah");
-	}
 	public CreateAppointmentGUI(String username) {
 		frame = new JFrame();
 		this.username = username;

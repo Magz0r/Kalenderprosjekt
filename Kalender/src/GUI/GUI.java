@@ -8,9 +8,12 @@ import javax.swing.table.*;
 import GUI.Kalenderprogram.btnNext_Action;
 import GUI.Kalenderprogram.btnPrev_Action;
 import GUI.Kalenderprogram.cmbYear_Action;
+import Logic.User;
+import Server.Database;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.*;
 
 public class GUI implements ActionListener {
@@ -31,8 +34,23 @@ public class GUI implements ActionListener {
 	static int realDay, realMonth, realYear, currentMonth, currentYear, realWeek, currentWeek;
 	static CreateAppointmentGUI lag;
 	
-	
-	public static void main(String[] args) {
+	public GUI(String username){
+		try {
+			User user = Database.getUser(username);
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
 		catch (ClassNotFoundException e) {}
 		catch (InstantiationException e) {}
@@ -48,10 +66,6 @@ public class GUI implements ActionListener {
 		frame.setResizable(false);
 		
 		opprett = new JButton("Opprett");
-		opprett.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		loggUt = new JButton("Logg ut");
 		scrNot = new JScrollPane();
 		kalender = new JPanel(null);
@@ -151,6 +165,7 @@ public class GUI implements ActionListener {
 		btnNext.addActionListener(new btnNext_Action());
 		cmbYear.addActionListener(new cmbYear_Action());
 		opprett.addActionListener(new opprett_Action());
+		loggUt.addActionListener(new loggUt_Action());
 		
 	}
 	public static void refreshCalendar(int month, int year, int week){
@@ -209,6 +224,11 @@ public class GUI implements ActionListener {
 	static class opprett_Action implements ActionListener{
 		public void actionPerformed (ActionEvent e){
 			lag = new CreateAppointmentGUI("lol");
+		}
+	}
+	static class loggUt_Action implements ActionListener{
+		public void actionPerformed (ActionEvent e){
+			System.exit(0);
 		}
 	}
 	static class cmbYear_Action implements ActionListener{

@@ -62,11 +62,13 @@ public class Database {
 	}
 	public static void delAppointment(Appointment appointment) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 	connect();
-	Statement s = con.createStatement();
-	s.executeUpdate("DELETE FROM appointment WHERE id='" + getAppointmentId(appointment) + "'");
 	for(int i = 0; i<appointment.getAttendies().size(); i++) {
 		addNotification(appointment.getAttendies().get(i), "Avtalen med tittel " + appointment.getTitle() + " er blitt slettet fra din kalender");
+		delUserHasAppointment(appointment.getAttendies().get(i), appointment);
 	}
+	Statement s = con.createStatement();
+	s.executeUpdate("DELETE FROM appointment WHERE id='" + getAppointmentId(appointment) + "'");
+
 	close();
 	}
 	private static void setAppointmentVars(Appointment appointment) {
@@ -106,9 +108,25 @@ public class Database {
 		Statement s = con.createStatement();
 		s.executeUpdate("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");
 		for(int i = 0; i<oldAppointment.getAttendies().size();i++) {
+			boolean match = false;
 			addNotification(oldAppointment.getAttendies().get(i), "Avtalen med tittel " + oldAppointment.getTitle() + " er blitt endret");
+			setAttending(oldAppointment.getAttendies().get(i), oldAppointment, "null");
+			//Remove changes
+			for(int j = 0; j<newAppointment.getAttendies().size(); j++) {
+				if (oldAppointment.getAttendies().get(i) == newAppointment.getAttendies().get(j)) {
+					match = true;
+				}
+			}
+			if(!match) {
+				delUserHasAppointment(oldAppointment.getAttendies().get(i), newAppointment);
+			}
 		}
 		close();
+	}
+	private static void delUserHasAppointment(User user, Appointment appointment) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		s.executeUpdate("DELETE FROM user_has_appointment WHERE user_username='" + user.getUsername() + "' AND appointment_id='" + getAppointmentId(appointment) + "'");
 	}
 	public static void addNotification(User user, String notification) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
@@ -192,7 +210,8 @@ public class Database {
 		}
 		return output;
 	}
-	private static User getUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public static User getUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
 		Statement s = con.createStatement();
 		ResultSet rs = s.executeQuery("SELECT * FROM user WHERE username='" + username + "'");
 		if(rs.next()) {

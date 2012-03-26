@@ -107,7 +107,15 @@ public class Database {
 		s.executeUpdate("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");
 		for(int i = 0; i<oldAppointment.getAttendies().size();i++) {
 			addNotification(oldAppointment.getAttendies().get(i), "Avtalen med tittel " + oldAppointment.getTitle() + " er blitt endret");
+			setAttending(oldAppointment.getAttendies().get(i), oldAppointment, "null");
+			//Remove changes
 		}
+		close();
+	}
+	private static void delUserHasAppointment(User user, Appointment appointment) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		s.executeUpdate("DELETE FROM user_has_appointment WHERE user_username='" + user.getUsername() + "' AND appointment_id='" + getAppointmentId(appointment) + "'");
 		close();
 	}
 	public static void addNotification(User user, String notification) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {

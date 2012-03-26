@@ -51,13 +51,16 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 	private ArrayList<Room> allRooms;
 	private ButtonGroup radioGroup;
 	private JRadioButton personal, published;
-	private String username;
+	private User user;
 	private JPanel visabilityPanel;
 	private MeetingView meet;
 	
-	public CreateAppointmentGUI(String username) {
+	public static void main(String[] args) {
+		new CreateAppointmentGUI(new User("tand", null, "tandberg"));
+	}
+	public CreateAppointmentGUI(User username) {
 		frame = new JFrame();
-		this.username = username;
+		this.user = username;
 		
 		allUsers = null;
 		try {
@@ -264,6 +267,11 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 		frame.setVisible(true);
 	}
 	
+	public CreateAppointmentGUI(Appointment appointment, User user) {
+		this(user);
+		// set fields.
+	}
+	
 	
 	private void fillRooms() {
 		try {
@@ -330,7 +338,6 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 					
 					if(roomList.getSelectedValue() != null) {
 						try {
-							User owner = new User(null, null, username);
 							Room room = (Room) roomList.getSelectedValue();
 
 							String[] startdato = fromDateField.getText().split("\\.");
@@ -346,13 +353,13 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 							String description = descriptionArea.getText();
 							boolean hidden = personal.isSelected();
 
-							Appointment appointment = new Appointment(room, start, end, owner, title, description, hidden);
+							Appointment appointment = new Appointment(room, start, end, user, title, description, hidden);
 
 							try {
 								if(JOptionPane.showConfirmDialog(this, "Er du sikker på at du vil opprette avtalen", "Opprette avtale", JOptionPane.YES_NO_OPTION) == 0) {
 									Database.addAppointment(appointment);
 									JOptionPane.showMessageDialog(this, "Møtet er nå lagt til.");
-									meet = new MeetingView(appointment, owner);
+									meet = new MeetingView(appointment, user);
 									frame.setVisible(false);
 								}
 							} catch (SQLException e1) {

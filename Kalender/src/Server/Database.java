@@ -212,7 +212,9 @@ public class Database {
 		}
 		return output;
 	}
-	public static ArrayList<User> getUsersByAppointmentAndStatus(Appointment appointment, int status) throws SQLException {
+	//Status: 0 = Not attending, 1 = Attending, 2 = Unanswered
+	public static ArrayList<User> getUsersByAppointmentAndStatus(Appointment appointment, int status) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		connect();
 		Statement s = con.createStatement();
 		String statusString;
 		if(status == 0) {
@@ -229,6 +231,7 @@ public class Database {
 			
 			output.add(user);
 		}
+		close();
 		return output;
 	}
 	public static User getUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {

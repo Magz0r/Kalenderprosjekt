@@ -38,16 +38,12 @@ public class GUI implements ActionListener {
 		try {
 			User user = Database.getUser(username);
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -228,7 +224,8 @@ public class GUI implements ActionListener {
 	}
 	static class loggUt_Action implements ActionListener{
 		public void actionPerformed (ActionEvent e){
-			System.exit(0);
+			new Login();
+			frame.setVisible(false);
 		}
 	}
 	static class cmbYear_Action implements ActionListener{

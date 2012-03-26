@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -52,13 +53,10 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 	private JRadioButton personal, published;
 	private String username;
 	private JPanel visabilityPanel;
+	private MeetingView meet;
 	
-	public static void main(String[] args) {
-		new CreateAppointmentGUI("hah");
-	}
 	public CreateAppointmentGUI(String username) {
 		frame = new JFrame();
-		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		this.username = username;
 		
 		allUsers = null;
@@ -354,6 +352,8 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 								if(JOptionPane.showConfirmDialog(this, "Er du sikker på at du vil opprette avtalen", "Opprette avtale", JOptionPane.YES_NO_OPTION) == 0) {
 									Database.addAppointment(appointment);
 									JOptionPane.showMessageDialog(this, "Møtet er nå lagt til.");
+									meet = new MeetingView(appointment, owner);
+									frame.setVisible(false);
 								}
 							} catch (SQLException e1) {
 							} catch (InstantiationException e1) {

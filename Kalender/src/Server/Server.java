@@ -154,38 +154,6 @@ public class Server {
 		}
 		}
 	}
-	static String generateString(){ //args?
-		return "";
-//		login#Tandberg,123
-
-//		addappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0
-//		StringBuilder builder = new StringBuilder();
-//		builder.append("addappointment#");
-//		builder.append(start.getTimeString() + ",");
-//		builder.append(end.getTimeString() + ",");
-//		
-//		
-//		return builder.toString();
-////		/*
-//		 	Date start = Date.toDate(args[0]);
-//			Date end = Date.toDate(args[1]);
-//			String title = args[2];
-//			String description = args[3];
-//			User owner = User.toUser(args[4]);
-//			Room room = Room.toRoom(args[5]);
-//			boolean hidden = Boolean.parseBoolean(args[6]);
-//		 */
-//		
-////		delappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0
-//		editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Kjel-200,0
-//		setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla
-//		getAppointmentsForUser#OlaN
-//		getUnansweredAppointmentsForUser#OlaN
-//		getAllUsers
-//		getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00
-//		addUser#Vegard-vegard.holter@gmail.com-vegaholt,123
-//		addRoom#R3-300
-	}
 	
 	static void print(String command, String[] args){
 		System.out.println("Command: " + command);

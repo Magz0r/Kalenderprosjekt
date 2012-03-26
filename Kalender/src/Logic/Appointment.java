@@ -107,7 +107,6 @@ public class Appointment {
 	}
 	public String getServerString(){
 		StringBuilder builder = new StringBuilder();
-		builder.append("appointment#");
 		builder.append(start.getTimeString() + ",");
 		builder.append(end.getTimeString() + ",");
 		builder.append(getTitle() + ",");

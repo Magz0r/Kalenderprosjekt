@@ -33,7 +33,7 @@ public class MeetingView extends JPanel implements ActionListener {
 	private JFrame frame;
 	private JLabel titleLabel, dateLabel, timeLabel, roomLabel, descriptionLabel, attendingLabel, notAttendingLabel, waitingLabel, contentTimeLabel, contentRoomLabel, contentDateLabel;
 	private JTextArea descriptionArea;
-	private JButton editButton, attendingButton, notAttendingButton;
+	private JButton editButton, attendingButton, notAttendingButton, cancelButton;
 	private GridBagConstraints c;
 	private JList attendingList, notAttendingList, waitingList;
 	private DefaultListModel attendingListModel, notAttendingListModel, waitingListModel;
@@ -84,6 +84,9 @@ public class MeetingView extends JPanel implements ActionListener {
 		notAttendingButton = new JButton("Deltar ikke");
 		notAttendingButton.addActionListener(this);
 		notAttendingButton.setActionCommand("notAttending");
+		cancelButton = new JButton("Tilbake");
+		cancelButton.addActionListener(this);
+		cancelButton.setActionCommand("cancel");
 		
 		//listmodel
 		attendingListModel = new DefaultListModel();
@@ -179,9 +182,13 @@ public class MeetingView extends JPanel implements ActionListener {
 		
 		c.gridx++;
 		add(notAttendingButton, c);
+		c.anchor = GridBagConstraints.EAST;
+		add(cancelButton, c);
 		
-		c.gridx++;
-		add(editButton, c);
+		if(user.getUsername().equals(appointment.getOwner().getUsername())) {
+			c.gridx++;
+			add(editButton, c);
+		}
 		
 		
 		
@@ -197,14 +204,15 @@ public class MeetingView extends JPanel implements ActionListener {
 	
 	private void fillWaiting() {
 		try {
-			participants = Database.getUsersByAppointmentAndStatus(model, 2);
+			waitingParticipants = Database.getUsersByAppointmentAndStatus(model, 2);
+			System.out.println(waitingParticipants);
 		} catch (SQLException e) {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		} catch (ClassNotFoundException e) {
 		}
 		
-		for (User waiting : notParticipants) {
+		for (User waiting : waitingParticipants) {
 			waitingListModel.addElement(waiting);
 		}
 	}
@@ -213,6 +221,7 @@ public class MeetingView extends JPanel implements ActionListener {
 		
 		try {
 			notParticipants = Database.getUsersByAppointmentAndStatus(model, 0);
+			System.out.println(notParticipants);
 		} catch (SQLException e) {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
@@ -231,14 +240,15 @@ public class MeetingView extends JPanel implements ActionListener {
 	private void fillAttending() {
 
 		try {
-			waitingParticipants = Database.getUsersByAppointmentAndStatus(model, 1);
+			participants = Database.getUsersByAppointmentAndStatus(model, 1);
+			System.out.println(participants);
 		} catch (SQLException e) {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		} catch (ClassNotFoundException e) {
 		}
 		
-		for (User atten : waitingParticipants) {
+		for (User atten : participants) {
 			attendingListModel.addElement(atten);
 			if(atten.getUsername().equals(user.getUsername())) {
 				attendingButton.setVisible(false);
@@ -252,12 +262,24 @@ public class MeetingView extends JPanel implements ActionListener {
 
 		Date start = new Date(2012, 4, 4, 12, 00);
 		Date end = new Date(2012, 4, 5, 13, 00);
-		User owner = new User("tandberg", "tandeey@gmail.com", "tandberg");
+		User owner = new User("tandberg", "tandeey@gmail.com", "LiseN");
 		
 		String lorem = "Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien. Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet, da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg til å bestå gjennom fem århundrer også tålt spranget over til elektronisk typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp Lorem Ipsum for dummytekst.";
 		
 		Appointment appointment = new Appointment(new Room("R60", 3), start, end, owner, "Avtale nr 12", lorem, false);
-		new MeetingView(appointment, owner);
+		
+		User pelle = new User("drittbruker", "drittmail", "Test2");
+		
+		try {
+			appointment = Database.getUnansweredAppointmentsForUser("LiseN").get(0);
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		} catch (SQLException e) {
+		}
+		
+		System.out.println(appointment.getAttendies());
+		new MeetingView(appointment, pelle);
 	}
 
 	@Override
@@ -293,6 +315,9 @@ public class MeetingView extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Du er nå merket som ikke deltakende på denne avtalen");
 			attendingButton.setVisible(false);
 			notAttendingButton.setVisible(false);
+		}
+		else if(e.getActionCommand().equals("cancel")) {
+			frame.setVisible(false);
 		}
 	}
 }

@@ -89,6 +89,9 @@ public class Database {
 		setAppointmentVars(appointment);
 		Statement s = con.createStatement();
 		ResultSet rs = s.executeQuery("SELECT id FROM appointment WHERE start='" + start + "' AND end='" + end + "' AND title='" + title + "' AND description='" + description + "' AND owner='" + user + "' AND room_id='" + room_id + "' AND private='" + privat + "'");
+		//System.out.println("Owner: " + appointment.getOwner().getUsername());
+		//System.out.println(appointment.getEnd().getTimeString());
+		//System.out.println("SELECT id FROM appointment WHERE start='" + start + "' AND end='" + end + "' AND title='" + title + "' AND description='" + description + "' AND owner='" + user + "' AND room_id='" + room_id + "' AND private='" + privat + "'");
 		
 		if(rs.next()) {
 			return rs.getString(1);
@@ -182,7 +185,7 @@ public class Database {
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
 			a.setStart(Date.toDate(rs.getString("start")));
 			a.setEnd(Date.toDate(rs.getString("end")));
-			a.setOwner(getUser(rs.getString("user_username")));
+			a.setOwner(getUser(rs.getString("owner")));
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));
 			if(rs.getString("private").equals("1")) {
@@ -209,6 +212,7 @@ public class Database {
 			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
 			
 			output.add(user);
+			//System.out.println("private " + user.getUsername());
 		}
 		return output;
 	}
@@ -224,7 +228,8 @@ public class Database {
 		} else {
 			statusString = " IS NULL";
 		}
-		ResultSet rs = s.executeQuery("SELECT username, name, email FROM user,user_has_appointment WHERE user_username=username AND appointment_id='" + getAppointmentId(appointment) + "' AND attending" +  statusString);
+		ResultSet rs = s.executeQuery("SELECT username, name, email FROM user,user_has_appointment WHERE user_username=username AND appointment_id='" + getAppointmentId(appointment) + "' AND attending" + statusString);
+		System.out.println("fbuijda: " + getAppointmentId(appointment));
 		ArrayList<User> output = new ArrayList<User>();
 		while(rs.next()) {
 			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
@@ -267,7 +272,8 @@ public class Database {
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
 			a.setStart(Date.toDate(rs.getString("start")));
 			a.setEnd(Date.toDate(rs.getString("end")));
-			a.setOwner(getUser(rs.getString("user_username")));
+			a.setOwner(getUser(rs.getString("owner")));
+			//System.out.println(rs.getString("owner"));
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));
 			if(rs.getString("private").equals("1")) {

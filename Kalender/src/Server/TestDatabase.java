@@ -21,8 +21,12 @@ public class TestDatabase {
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
-			//Database.addAppointment(appointment);
-			Database.editAppointment(appointment, appointment2);
+			ArrayList<Appointment> al2 = Database.getUnansweredAppointmentsForUser("OlaN");
+			ArrayList<User> al = Database.getUsersByAppointmentAndStatus(al2.get(0), 2);
+			
+			System.out.println(al2.get(0).getTitle());
+			System.out.println(al.get(1).getUsername());
+			//Database.editAppointment(appointment, appointment2);
 			//Database.delAppointment(appointment);
 			//Database.setAttending(user, appointment, "null");
 		} catch (InstantiationException e1) {

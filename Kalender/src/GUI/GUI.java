@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class GUI {
+public class GUI implements ActionListener {
 	
 	static JFrame frame;
 	static Container pane;
@@ -29,6 +29,7 @@ public class GUI {
 	static JScrollPane stblCalendar; //The scrollpane
 	static JPanel pnlCalendar; //The panel
 	static int realDay, realMonth, realYear, currentMonth, currentYear, realWeek, currentWeek;
+	static CreateAppointmentGUI lag;
 	
 	
 	public static void main(String[] args) {
@@ -47,6 +48,10 @@ public class GUI {
 		frame.setResizable(false);
 		
 		opprett = new JButton("Opprett");
+		opprett.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		loggUt = new JButton("Logg ut");
 		scrNot = new JScrollPane();
 		kalender = new JPanel(null);
@@ -145,6 +150,7 @@ public class GUI {
 		btnPrev.addActionListener(new btnPrev_Action());
 		btnNext.addActionListener(new btnNext_Action());
 		cmbYear.addActionListener(new cmbYear_Action());
+		opprett.addActionListener(new opprett_Action());
 		
 	}
 	public static void refreshCalendar(int month, int year, int week){
@@ -200,6 +206,11 @@ public class GUI {
 			refreshCalendar(currentMonth, currentYear, currentWeek);
 		}
 	}
+	static class opprett_Action implements ActionListener{
+		public void actionPerformed (ActionEvent e){
+			lag = new CreateAppointmentGUI("lol");
+		}
+	}
 	static class cmbYear_Action implements ActionListener{
 		public void actionPerformed (ActionEvent e){
 			if (cmbYear.getSelectedItem() != null){
@@ -208,6 +219,11 @@ public class GUI {
 				refreshCalendar(currentMonth, currentYear, currentWeek); //Refresh
 			}
 		}
+	}
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -210,9 +210,7 @@ public class Database {
 		ArrayList<User> output = new ArrayList<User>();
 		while(rs.next()) {
 			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
-			
 			output.add(user);
-			//System.out.println("private " + user.getUsername());
 		}
 		return output;
 	}
@@ -229,7 +227,6 @@ public class Database {
 			statusString = " IS NULL";
 		}
 		ResultSet rs = s.executeQuery("SELECT username, name, email FROM user,user_has_appointment WHERE user_username=username AND appointment_id='" + getAppointmentId(appointment) + "' AND attending" + statusString);
-		System.out.println("fbuijda: " + getAppointmentId(appointment));
 		ArrayList<User> output = new ArrayList<User>();
 		while(rs.next()) {
 			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));

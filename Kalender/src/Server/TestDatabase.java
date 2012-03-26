@@ -21,11 +21,11 @@ public class TestDatabase {
 		appointment.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment.addAttending(new User("Lise Nordmann","lise@norge.no","LiseN"));
 		try {
-			ArrayList<Appointment> al2 = Database.getUnansweredAppointmentsForUser("OlaN");
+			ArrayList<Appointment> al2 = Database.getUnansweredAppointmentsForUser("LiseN");
 			ArrayList<User> al = Database.getUsersByAppointmentAndStatus(al2.get(0), 2);
 			
 			System.out.println(al2.get(0).getTitle());
-			System.out.println(al.get(1).getUsername());
+			System.out.println(al.get(0).getUsername());
 			//Database.editAppointment(appointment, appointment2);
 			//Database.delAppointment(appointment);
 			//Database.setAttending(user, appointment, "null");

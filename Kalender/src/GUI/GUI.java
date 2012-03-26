@@ -39,7 +39,7 @@ public class GUI {
 		catch (UnsupportedLookAndFeelException e) {}
 		
 		frame = new JFrame("Kalender");
-		frame.setSize(812, 768);
+		frame.setSize(1100, 600);
 		pane = frame.getContentPane();
 		pane.setLayout(null);
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
@@ -58,10 +58,10 @@ public class GUI {
 		pane.add(loggUt);
 		pane.add(scrNot);
 		
-		opprett.setBounds(10, 200, 225, 64);
-		loggUt.setBounds(689, 6, 160-loggUt.getPreferredSize().width/2, 25);
+		opprett.setBounds(10, 32, 225, 64);
+		loggUt.setBounds(980, 6, 160-loggUt.getPreferredSize().width/2, 25);
 		notify = new JTabbedPane();
-		notify.setBounds(10, 299, 224, 441);
+		notify.setBounds(10, 137, 224, 441);
 		frame.getContentPane().add(notify);
 		notify.addTab("Mine", mine);
 		notify.addTab("Nye", nye);
@@ -87,7 +87,7 @@ public class GUI {
 		pnlCalendar.add(stblCalendar);
 
 		//Set bounds
-		pnlCalendar.setBounds(246, 200, 557, 540);
+		pnlCalendar.setBounds(246, 32, 557, 540);
 		lblMonth.setBounds(227, 28, 48, 16);
 		lblYear.setBounds(10, 514, 110, 20);
 		cmbYear.setBounds(441, 515, 100, 20);

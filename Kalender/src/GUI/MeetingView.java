@@ -38,6 +38,7 @@ public class MeetingView extends JPanel implements ActionListener {
 	public MeetingView(Appointment appointment, User user) {
 		model = appointment;
 		frame = new JFrame();
+		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
 		//labels
 		titleLabel = new JLabel(appointment.getTitle());

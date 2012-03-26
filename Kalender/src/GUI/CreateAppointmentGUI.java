@@ -58,6 +58,7 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 	}
 	public CreateAppointmentGUI(String username) {
 		frame = new JFrame();
+		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		this.username = username;
 		
 		allUsers = null;

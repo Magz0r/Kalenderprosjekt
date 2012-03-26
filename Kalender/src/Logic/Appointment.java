@@ -105,5 +105,18 @@ public class Appointment {
 	public void removeAttendings(){
 		attendies.clear();
 	}
-	
+	public String getServerString(){
+		StringBuilder builder = new StringBuilder();
+		builder.append("appointment#");
+		builder.append(start.getTimeString() + ",");
+		builder.append(end.getTimeString() + ",");
+		builder.append(getTitle() + ",");
+		builder.append(getDescription() + ",");
+		builder.append(owner.getServerString() + ",");
+		builder.append(room.toString() + ",");
+		if(hidden) builder.append("1");
+		else builder.append("0");
+		return builder.toString();
+		
+	}
 }

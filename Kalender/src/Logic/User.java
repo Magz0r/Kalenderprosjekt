@@ -53,6 +53,13 @@ public class User {
 		User user = new User(name, email, username);
 		return user;
 	}
+	public String getServerString(){
+		StringBuilder builder = new StringBuilder();
+		builder.append(getName() + "-");
+		builder.append(getEmail() + "-");
+		builder.append(getUsername());
+		return builder.toString();
+	}
 	
 	public String toString() {
 		return name;

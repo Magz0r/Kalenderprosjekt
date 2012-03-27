@@ -53,11 +53,11 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 	private User user;
 	private JPanel visabilityPanel;
 	private MeetingView meet;
+	private boolean edit;
+	private Appointment oldAppointment;
 	
-	public static void main(String[] args) {
-		new CreateAppointmentGUI(new User("tand", null, "tandberg"));
-	}
-	public CreateAppointmentGUI(User username) {
+	public CreateAppointmentGUI(User username, boolean edit) {
+		this.edit = edit;
 		frame = new JFrame();
 		this.user = username;
 		
@@ -269,7 +269,8 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 	}
 	
 	public CreateAppointmentGUI(Appointment appointment, User user) {
-		this(user);
+		this(user, true);
+		oldAppointment = appointment;
 		// set fields.
 		fromDateField.setText(appointment.getStart().getDate());
 		fromClockField.setText(appointment.getStart().getClock());
@@ -373,8 +374,15 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 
 							try {
 								if(JOptionPane.showConfirmDialog(this, "Er du sikker på at du vil opprette avtalen", "Opprette avtale", JOptionPane.YES_NO_OPTION) == 0) {
-									Database.addAppointment(appointment);
-									JOptionPane.showMessageDialog(this, "Møtet er nå lagt til.");
+									if(edit) {
+										Database.editAppointment(oldAppointment, appointment);
+										JOptionPane.showMessageDialog(this, "Møtet er n� endret");
+
+									} else {
+										Database.addAppointment(appointment);
+										JOptionPane.showMessageDialog(this, "Møtet er nå lagt til.");
+										
+									}
 									meet = new MeetingView(appointment, user);
 									frame.setVisible(false);
 								}

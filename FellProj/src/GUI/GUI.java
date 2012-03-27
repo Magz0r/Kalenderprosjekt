@@ -237,6 +237,21 @@ public class GUI implements ActionListener {
 		public Component getTableCellRendererComponent (JTable table, Object value, boolean selected, boolean focused, int row, int column){
 			super.getTableCellRendererComponent(table, value, selected, focused, row, column);
 
+			try {
+				list = Database.getAppointmentsForUser(user.getUsername());
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			for (int i = 0; i < list.size(); i++) {
+				
+			}
 			
 
 			return this;  

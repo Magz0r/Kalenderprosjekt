@@ -5,6 +5,7 @@ package no.ntnu.fp.net.co;
 
 import java.io.EOFException;
 
+
 //import no.ntnu.fp.net.cl;
 
 import java.io.IOException;

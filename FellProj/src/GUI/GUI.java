@@ -5,6 +5,10 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
+import java.awt.Component;
+import java.awt.Color;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import Logic.User;
 import Logic.Date;
@@ -213,8 +217,7 @@ public class GUI implements ActionListener {
 				mtblCalendar.setValueAt(datoer.get(i-1), 0, i);
 		}
 		
-		
-		tblCalendar.setDefaultRenderer(tblCalendar.getColumnClass(0), new tblCalendarRenderer());
+		getAppointments();
 		
 	}
 	public static void getAppointments(){
@@ -229,38 +232,35 @@ public class GUI implements ActionListener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		for (int i = 0; i < list.size(); i++) {
-			
+			System.out.println(list.get(i).getStart().getWeek()); 
+			System.out.println(currentWeek + "kk");
 		}
-	}
-	static class tblCalendarRenderer extends DefaultTableCellRenderer{
-		public Component getTableCellRendererComponent (JTable table, Object value, boolean selected, boolean focused, int row, int column){
-			super.getTableCellRendererComponent(table, value, selected, focused, row, column);
-
-			try {
-				list = Database.getAppointmentsForUser(user.getUsername());
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-			if(!list.isEmpty()){
-				for (int i = 0; i < list.size(); i++) {
-					list.get(i).
+		
+		if(!list.isEmpty()){
+			System.out.println("0");
+			for (int i = 0; i < list.size(); i++) {
+				System.out.println("1st");
+				if(list.get(i).getStart().getWeek() == currentWeek){
+					System.out.println("2nd");
+					for (int j = 1; j < mtblCalendar.getColumnCount(); j++) {
+						System.out.println("3rd");
+						if (mtblCalendar.getValueAt(0, j).equals(list.get(i).getStart().getDay())) {
+							System.out.println("4th");
+							for (int j2 = 1; j2 < mtblCalendar.getRowCount(); j2++) {
+								System.out.println("5th");
+								if (mtblCalendar.getValueAt(j2, 0).equals(list.get(i).getStart().getClock())){
+									System.out.println("6th");
+									mtblCalendar.setValueAt(list.get(i).getTitle(), j2, j);
+								}
+							}
+						}
+					}
 				}
 			}
-			
-
-			return this;  
 		}
 	}
-
-
 
 	
 	static class btnPrev_Action implements ActionListener{

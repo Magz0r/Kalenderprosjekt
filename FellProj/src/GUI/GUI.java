@@ -249,8 +249,10 @@ public class GUI implements ActionListener {
 				e.printStackTrace();
 			}
 			
-			for (int i = 0; i < list.size(); i++) {
-				
+			if(!list.isEmpty()){
+				for (int i = 0; i < list.size(); i++) {
+					list.get(i).
+				}
 			}
 			
 

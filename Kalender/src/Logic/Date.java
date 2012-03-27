@@ -16,7 +16,7 @@ public class Date {
 		cal.set(year, month, day, hour, minutes, 0);
 		timestamp = cal.getTimeInMillis();
 		timeString = year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":00";
-		date = day + ". " + month + ". " + year;
+		date = day + "." + month + "." + year;
 		clock = hour+":"+minutes;
 		if(minutes == 0) {
 			clock += "0";

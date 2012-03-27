@@ -27,13 +27,13 @@ public class MineAppointmentsView extends JPanel implements ActionListener {
 	private JButton viewAppointmentButton;
 	private User user;
 	private GridBagConstraints c;
+	private Object mainView;
 	
-	public MineAppointmentsView(User user) {
-
+	public MineAppointmentsView(User user, Object mainView) {
+		this.mainView = mainView;
 		this.user = user;
 		listmodel = new DefaultListModel();
 		list = new JList(listmodel);
-		list.setPreferredSize(new Dimension(100, 300));
 		
 		viewAppointmentButton = new JButton("Vis m¿te");
 		viewAppointmentButton.addActionListener(this);
@@ -45,6 +45,7 @@ public class MineAppointmentsView extends JPanel implements ActionListener {
 		c.gridx = 0;
 		c.gridy = 0;
 		add(new JScrollPane(list), c);
+		getComponent(0).setPreferredSize(new Dimension(170, 280));
 
 		c.gridy++;
 		add(viewAppointmentButton, c);

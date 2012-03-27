@@ -1,2 +1,16 @@
-.metadata/
-Kalender/bin/
+# Ignore eclipse files:
+.settings/
+.classpath
+.project
+
+# Ignore the build directories:
+build/
+bin/
+doc/
+
+# Ignore the A2 log directory:
+Log/
+
+# Ignore vim swap files:
+.*.swo
+.*.swp

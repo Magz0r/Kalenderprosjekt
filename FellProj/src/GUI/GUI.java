@@ -21,7 +21,8 @@ public class GUI implements ActionListener {
 	private JButton opprett, loggUt, refresh;
 	private JScrollPane scrNot;
 	private JTabbedPane notify;
-	private JPanel kalender, mine, nye;
+	private JPanel kalender, nye;
+	private MineAppointmentsView mine;
 	private JLabel lblMonth;
 	private JButton btnNext, btnPrev;
 	private JTable tblCalendar;
@@ -208,13 +209,9 @@ public class GUI implements ActionListener {
 		try {
 			list = Database.getAppointmentsForUser(user.getUsername());
 		} catch (InstantiationException e) {
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		
 		for (int i = 1; i < mtblCalendar.getColumnCount(); i++) {
@@ -289,6 +286,7 @@ public class GUI implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			refreshCalendar();
+			mine.filllist();
 		}
 		
 	}

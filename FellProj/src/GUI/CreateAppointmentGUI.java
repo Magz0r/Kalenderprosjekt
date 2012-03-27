@@ -371,6 +371,10 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 							boolean hidden = personal.isSelected();
 
 							Appointment appointment = new Appointment(room, start, end, user, title, description, hidden);
+							
+							for (int i = 0; i < participantListModel.size(); i++) {
+								appointment.addAttending((User) participantListModel.get(i));
+							}
 
 							try {
 								if(JOptionPane.showConfirmDialog(this, "Er du sikker på at du vil opprette avtalen", "Opprette avtale", JOptionPane.YES_NO_OPTION) == 0) {
@@ -413,6 +417,15 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 			if(ans == 0) {
 				//database -> slett avtale
 				frame.setVisible(false);
+				if(oldAppointment != null) {
+					try {
+						Database.delAppointment(oldAppointment);
+					} catch (InstantiationException e1) {
+					} catch (IllegalAccessException e1) {
+					} catch (ClassNotFoundException e1) {
+					} catch (SQLException e1) {
+					}
+				}
 				//new Gui(user)
 			}
 		}

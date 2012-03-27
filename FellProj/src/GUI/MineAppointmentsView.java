@@ -33,9 +33,8 @@ public class MineAppointmentsView extends JPanel implements ActionListener {
 		this.user = user;
 		listmodel = new DefaultListModel();
 		list = new JList(listmodel);
-		list.setPreferredSize(new Dimension(100, 300));
 		
-		viewAppointmentButton = new JButton("Vis møte");
+		viewAppointmentButton = new JButton("Vis m¿te");
 		viewAppointmentButton.addActionListener(this);
 		
 		filllist();
@@ -45,12 +44,16 @@ public class MineAppointmentsView extends JPanel implements ActionListener {
 		c.gridx = 0;
 		c.gridy = 0;
 		add(new JScrollPane(list), c);
+		getComponent(0).setPreferredSize(new Dimension(170, 280));
 
 		c.gridy++;
 		add(viewAppointmentButton, c);
 		
 		setVisible(true);
 		
+	}
+	public static void main(String[] args) {
+		new MineAppointmentsView(new User(null, null, null));
 	}
 	
 	private void filllist() {
@@ -59,6 +62,11 @@ public class MineAppointmentsView extends JPanel implements ActionListener {
 			appointments = Database.getAppointmentsForUser(user.getUsername());
 			ArrayList<Appointment> temp = Database.getAppointmentsByOwner(user);
 			for (Appointment appointment : temp) {
+				for (Appointment sammenlign : appointments) {
+					if(sammenlign.equals(appointment.getDescription())) {
+						break;
+					}
+				}
 				appointments.add(appointment);
 			}
 		} catch (InstantiationException e) {

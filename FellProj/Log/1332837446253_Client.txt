@@ -1,0 +1,103 @@
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Timestamp        Logging Entity           Source                   Destination              Seq No  Flag    Ack No  Start Payload            Checksum    Comment                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10:37:26.285     ConnectionImpl - connect                                                                                                                I was called                                      
+10:37:26.371     SendTimer                78.91.83.156:7877        78.91.83.156:7878        5051    SYN     -1                               0           Sending this datagram (try: 1)                    
+10:37:26.411     NETWORK                                                                                                                                 Packet 5051 send!                                 
+10:37:26.412     AbstractConnection                                                                                                                      Waiting for incoming packet in doReceive()        
+10:37:26.416     CLSocket::receive                                                                                                                       Receiving at:7877                                 
+10:37:26.447     CLSocket::coReceive                                                                                                                     State of socket is:
+Bound:true
+Closed: false
+Connected: true
+Local Port: 7877
+Remote Port:52450
+10:37:26.453     CLSocket::receive                                                                                                                       Finished receiving at:7877                        
+10:37:26.454     AbstractConnection                                                                                                                      Received an internal packet in doReceive          
+10:37:26.455     ConnectionImpl - connect 78.91.83.156:7878        78.91.83.156:7877        4015    SYN_ACK 2147483647                         0           received SYN_ACK                                  
+10:37:26.606     AbstractConnection       78.91.83.156:7877        78.91.83.156:7878        5052    ACK     4015                             0           Sending Ack: 4015                                 
+10:37:26.611     NETWORK                                                                                                                                 Packet 5052 send!                                 
+10:37:26.612     ConnectionImpl - connect                                                                                                                connection established                            
+10:37:27.614     ConnectionImpl - send                                                                                                                   I was called                                      
+10:37:27.615     SendTimer                78.91.83.156:7877        78.91.83.156:7878        5053    NONE    -1      Hi, server, i'm client   642693653   Sending this datagram (try: 1)                    
+10:37:27.619     NETWORK                                                                                                                                 Packet 5053 send!                                 
+10:37:27.620     AbstractConnection                                                                                                                      Waiting for incoming packet in receiveAck()       
+10:37:27.623     CLSocket::receive                                                                                                                       Receiving at:7877                                 
+10:37:27.624     CLSocket::coAccept                                                                                                                      Fant gjenbrukbar innsocket                        
+10:37:27.800     CLSocket::coReceive                                                                                                                     State of socket is:
+Bound:true
+Closed: false
+Connected: true
+Local Port: 7877
+Remote Port:52453
+10:37:27.803     CLSocket::receive                                                                                                                       Finished receiving at:7877                        
+10:37:27.804     AbstractConnection                                                                                                                      Received an internal packet in receiveAck         
+10:37:27.805     ConnectionImpl - receive 78.91.83.156:7878        78.91.83.156:7877        4016    ACK     5053                             0           received this pck while w8ing for ack             
+10:37:27.806     ConnectionImpl - send                                                                                                                   package delivered                                 
+10:37:27.807     ConnectionImpl - receive                                                                                                                I was called                                      
+10:37:27.808     AbstractConnection                                                                                                                      Waiting for incoming packet in doReceive()        
+10:37:27.810     CLSocket::receive                                                                                                                       Receiving at:7877                                 
+10:37:27.819     CLSocket::coAccept                                                                                                                      Fant gjenbrukbar innsocket                        
+10:37:28.801     CLSocket::coReceive                                                                                                                     State of socket is:
+Bound:true
+Closed: false
+Connected: true
+Local Port: 7877
+Remote Port:52454
+10:37:28.804     CLSocket::receive                                                                                                                       Finished receiving at:7877                        
+10:37:28.805     AbstractConnection                                                                                                                      Received an external packet in doReceive          
+10:37:28.805     ConnectionImpl - receive 78.91.83.156:7878        78.91.83.156:7877        4017    NONE    -1      hi bro, i'm server       2556315988  received this, going to check if it is waited in if
+10:37:28.956     ConnectionImpl - receive 78.91.83.156:7878        78.91.83.156:7877        4017    NONE    -1      hi bro, i'm server       2556315988  received this pckg(valid CS), ACK'ing it          
+10:37:28.956     AbstractConnection       78.91.83.156:7877        78.91.83.156:7878        5054    ACK     4017                             0           Sending Ack: 4017                                 
+10:37:28.960     NETWORK                                                                                                                                 Packet 5054 send!                                 
+10:37:28.961     ClientTest                                                                                                                              recevied this sith: hi bro, i'm server            
+10:37:29.962     ConnectionImpl - send                                                                                                                   I was called                                      
+10:37:29.964     SendTimer                78.91.83.156:7877        78.91.83.156:7878        5055    NONE    -1      hi again, server         3081274576  Sending this datagram (try: 1)                    
+10:37:29.978     NETWORK                                                                                                                                 Packet 5055 send!                                 
+10:37:29.978     AbstractConnection                                                                                                                      Waiting for incoming packet in receiveAck()       
+10:37:29.982     CLSocket::receive                                                                                                                       Receiving at:7877                                 
+10:37:29.983     CLSocket::coAccept                                                                                                                      Fant gjenbrukbar innsocket                        
+10:37:30.148     CLSocket::coReceive                                                                                                                     State of socket is:
+Bound:true
+Closed: false
+Connected: true
+Local Port: 7877
+Remote Port:52457
+10:37:30.151     CLSocket::receive                                                                                                                       Finished receiving at:7877                        
+10:37:30.152     AbstractConnection                                                                                                                      Received an internal packet in receiveAck         
+10:37:30.153     ConnectionImpl - receive 78.91.83.156:7878        78.91.83.156:7877        4018    ACK     5055                             0           received this pck while w8ing for ack             
+10:37:30.153     ConnectionImpl - send                                                                                                                   package delivered                                 
+10:37:31.154     TestClient                                                                                                                              Client is now closing the connection!             
+10:37:31.155     ConnectionImpl - close                                                                                                                  I was called                                      
+10:37:31.156     ConnectionImpl - close   78.91.83.156:7877        78.91.83.156:7878        5056    FIN     -1                               0           sending this FIN package                          
+10:37:31.157     SendTimer                78.91.83.156:7877        78.91.83.156:7878        5056    FIN     -1                               0           Sending this datagram (try: 1)                    
+10:37:31.167     NETWORK                                                                                                                                 Packet 5056 send!                                 
+10:37:31.168     AbstractConnection                                                                                                                      Waiting for incoming packet in receiveAck()       
+10:37:31.184     CLSocket::receive                                                                                                                       Receiving at:7877                                 
+10:37:31.185     CLSocket::coAccept                                                                                                                      Fant gjenbrukbar innsocket                        
+10:37:31.339     CLSocket::coReceive                                                                                                                     State of socket is:
+Bound:true
+Closed: false
+Connected: true
+Local Port: 7877
+Remote Port:52459
+10:37:31.342     CLSocket::receive                                                                                                                       Finished receiving at:7877                        
+10:37:31.352     AbstractConnection                                                                                                                      Received an internal packet in receiveAck         
+10:37:31.354     ConnectionImpl - close                                                                                                                  successfilly delivered FIN package, waiting for FIN from the other side
+10:37:31.355     AbstractConnection                                                                                                                      Waiting for incoming packet in doReceive()        
+10:37:31.357     CLSocket::receive                                                                                                                       Receiving at:7877                                 
+10:37:31.363     CLSocket::coAccept                                                                                                                      Fant gjenbrukbar innsocket                        
+10:37:31.489     CLSocket::coReceive                                                                                                                     State of socket is:
+Bound:true
+Closed: false
+Connected: true
+Local Port: 7877
+Remote Port:52460
+10:37:31.491     CLSocket::receive                                                                                                                       Finished receiving at:7877                        
+10:37:31.492     AbstractConnection                                                                                                                      Received an internal packet in doReceive          
+10:37:31.493     ConnectionImpl - close                                                                                                                  successfilly acquired FIN package, sending ACK and quitting
+10:37:31.644     AbstractConnection       78.91.83.156:7877        78.91.83.156:7878        5057    ACK     4020                             0           Sending Ack: 4020                                 
+10:37:31.648     NETWORK                                                                                                                                 Packet 5057 send!                                 
+10:37:31.649     ClientTest                                                                                                                              CLIENT TEST FINISHED                              

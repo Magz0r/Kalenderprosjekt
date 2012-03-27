@@ -38,6 +38,7 @@ public class GUI implements ActionListener {
 	static Appointment meeting;
 	static Date date;
 	static Calendar cal2;
+	static JPanel search;
 	
 	public GUI(String username){
 		try {
@@ -70,8 +71,9 @@ public class GUI implements ActionListener {
 		loggUt = new JButton("Logg ut");
 		scrNot = new JScrollPane();
 		kalender = new JPanel(null);
-		mine = new JPanel(null);
-		nye = new JPanel(null);
+		mine = new MineAppointmentsView(user);
+		nye = new NotificationsView(user);
+		search = new SearchUserCalendars(user);
 		
 		pane.add(kalender);
 		pane.add(opprett);
@@ -85,6 +87,7 @@ public class GUI implements ActionListener {
 		frame.getContentPane().add(notify);
 		notify.addTab("Mine", mine);
 		notify.addTab("Nye", nye);
+		notify.addTab("S¿k", search);
 		
 		lblMonth = new JLabel ("1");
 		lblYear = new JLabel ("Bytt Œr:");
@@ -152,7 +155,7 @@ public class GUI implements ActionListener {
 		tblCalendar.setShowHorizontalLines(true);
 		tblCalendar.setGridColor(Color.BLACK);
 		mtblCalendar.setColumnCount(8);
-		mtblCalendar.setRowCount(13);
+		mtblCalendar.setRowCount(25);
 
 		
 		//Populate combo box
@@ -171,8 +174,8 @@ public class GUI implements ActionListener {
 		
 	}
 	public static void refreshCalendar(int month, int year, int week){
-		int nod, som; //Number Of Days, Start Of Month
-			
+		
+		
 		btnPrev.setEnabled(true); //Enable buttons at first
 		btnNext.setEnabled(true);
 		if (week == 1 && year <= realYear-10){btnPrev.setEnabled(false);} //Too early
@@ -180,10 +183,6 @@ public class GUI implements ActionListener {
 		lblMonth.setText("Uke: "+(week)); //Refresh the month label (at the top)
 		cmbYear.setSelectedItem(String.valueOf(year)); //Select the correct year in the combo box
 		
-		//Get first day of month and number of days
-		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
-		nod = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
-		som = cal.get(GregorianCalendar.DAY_OF_WEEK);
 		
 		//Clear table
 		for (int i=0; i<12; i++){
@@ -193,41 +192,27 @@ public class GUI implements ActionListener {
 		}
 
 		//Draw calendar
-		String[] time = {"07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
-		for (int i = 1; i < 12; i++) {
+		String[] time = {" ", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00"};
+		for (int i = 1; i < 25; i++) {
 			mtblCalendar.setValueAt(time[i], i, 0);
 		}
+		int[] days ={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 		
-		int verdi  =  realDay;
-		cal2 = Calendar.getInstance();
-		int numday = cal2.getActualMaximum(Calendar.DAY_OF_MONTH);
-		System.out.println(numday);
+		ArrayList datoer = new ArrayList<Integer>();
 		
-		for (int i = 0; i < 7; i++) {
-			if(currentWeek == realWeek){
-				int weekday = cal2.get(Calendar.DAY_OF_WEEK);
-				int col = weekday;
-				if (col+i >= 8){
-					col = 0;
-					mtblCalendar.setValueAt(verdi-2+1, 0, col+1);
-					break;
-				}
-				mtblCalendar.setValueAt(verdi+i, 0, col+i);
+		for (int i = 0; i < days.length; i++) {
+			for (int j = 0; j < days[i]; j++) {
+				datoer.add(j+1);
 			}
-			else if(currentWeek != realWeek){
-				int uim = cal2.get(Calendar.WEEK_OF_MONTH);
-				System.out.println(uim);
-				if(currentWeek < realWeek && uim < 4){
-					int weekday = cal2.get(Calendar.DAY_OF_WEEK);
-					int dif = (realWeek - currentWeek)*7 + weekday-1;
-					for (int j = 0; j < 7; j++) {
-						mtblCalendar.setValueAt(realDay-dif+i, 0, i+1);
-					}
-					
-				}
-			}
-
 		}
+		
+		for (int i = 1; i < 8; i++) {
+			if(currentWeek != 1)
+				mtblCalendar.setValueAt(datoer.get(currentWeek*7-9+i), 0, i);
+			else
+				mtblCalendar.setValueAt(datoer.get(i-1), 0, i);
+		}
+		
 		
 		tblCalendar.setDefaultRenderer(tblCalendar.getColumnClass(0), new tblCalendarRenderer());
 		

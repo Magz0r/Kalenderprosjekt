@@ -1,0 +1,12 @@
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Timestamp        Logging Entity           Source                   Destination              Seq No  Flag    Ack No  Start Payload            Checksum    Comment                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12:20:8.851      ConnectionImpl - accept                                                                                                                 I was called                                      
+12:20:8.853      AbstractConnection                                                                                                                      Waiting for incoming packet in doReceive()        
+12:20:8.919      CLSocket::receive                                                                                                                       Receiving at:7878                                 
+12:20:11.654     ConnectionImpl - receivePacketNotNull                                                                                                               received null-pckg                                
+12:20:11.655     AbstractConnection                                                                                                                      Waiting for incoming packet in doReceive()        
+12:20:11.657     CLSocket::receive                                                                                                                       Receiving at:7878                                 
+12:20:11.658     CLSocket::coAccept                                                                                                                      Fant gjenbrukbar innsocket                        

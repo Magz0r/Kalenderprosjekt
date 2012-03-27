@@ -1,5 +1,7 @@
 package GUI;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -7,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -36,13 +39,18 @@ public class NotificationsView extends JPanel implements ActionListener, ListSel
 		listmodel = new DefaultListModel();
 		list = new JList(listmodel);
 		list.addListSelectionListener(this);
+		list.setPreferredSize(new Dimension(160, 250));
+		list.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		
 		textarea = new JTextArea(4, 14);
 		textarea.setLineWrap(true);
 		textarea.setWrapStyleWord(true);
 		textarea.setEditable(false);
+		textarea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		textarea.setVisible(false);
 		read = new JButton("Merk som lest");
 		read.addActionListener(this);
+		read.setVisible(false);
 		
 		filllist();
 		
@@ -50,7 +58,7 @@ public class NotificationsView extends JPanel implements ActionListener, ListSel
 		c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		add(new JScrollPane(list), c);
+		add(list, c);
 
 		c.gridy++;
 		add(textarea, c);

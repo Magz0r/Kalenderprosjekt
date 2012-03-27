@@ -27,14 +27,13 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 	private ArrayList<User> users;
 	private JList list;
 	private DefaultListModel listmodel;
-	private JButton viewCalendar;
+	private JButton viewCalendar, viewMyCalendar;
 	private JTextField searchField;
-	private User user;
+	private User myUser;
 	private GridBagConstraints c;
 	
 	public SearchUserCalendars(User user) {
-		JFrame frame = new JFrame();
-		this.user = user;
+		this.myUser = user;
 		listmodel = new DefaultListModel();
 		list = new JList(listmodel);
 		list.setPreferredSize(new Dimension(100, 300));
@@ -44,6 +43,8 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		
 		viewCalendar = new JButton("Vis brukerens kalender");
 		viewCalendar.addActionListener(this);
+		viewMyCalendar = new JButton("Vis min kalender");
+		viewMyCalendar.addActionListener(this);
 		
 		filllist();
 		
@@ -52,6 +53,7 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		c.gridx = 0;
 		c.gridy = 0;
 		
+		c.fill = GridBagConstraints.HORIZONTAL;
 		add(searchField, c);
 		c.gridy++;
 		
@@ -61,14 +63,6 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		add(viewCalendar, c);
 		
 		setVisible(true);
-		frame.add(this);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-	}
-	
-	public static void main(String[] args) {
-		new SearchUserCalendars(new User(null, null, "OlaN"));
 	}
 	
 	private void filllist() {
@@ -80,10 +74,11 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		} catch (ClassNotFoundException e) {
 		} catch (SQLException e) {
 		}
-		
+
+		System.out.println(myUser.getUsername());
 		listmodel.clear();
 		for (User user : users) {
-			if(user.getName().toLowerCase().matches(".*"+searchField.getText().toLowerCase()+".*")) {
+			if(user.getName().toLowerCase().matches(".*"+searchField.getText().toLowerCase()+".*") && !user.getUsername().equals(myUser.getUsername())) {
 				listmodel.addElement(user);
 			}
 		}
@@ -96,6 +91,10 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		if(e.getSource() == viewCalendar) {
 			
 			//vis kalender
+		}
+		else if(e.getSource() == viewMyCalendar) {
+			
+			//vis min kalender
 		}
 		
 	}

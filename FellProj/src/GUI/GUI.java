@@ -239,20 +239,22 @@ public class GUI implements ActionListener {
 		}
 		
 		if(!list.isEmpty()){
-			System.out.println("0");
 			for (int i = 0; i < list.size(); i++) {
-				System.out.println("1st");
 				if(list.get(i).getStart().getWeek() == currentWeek){
-					System.out.println("2nd");
 					for (int j = 1; j < mtblCalendar.getColumnCount(); j++) {
-						System.out.println("3rd");
 						if (mtblCalendar.getValueAt(0, j).equals(list.get(i).getStart().getDay())) {
-							System.out.println("4th");
 							for (int j2 = 1; j2 < mtblCalendar.getRowCount(); j2++) {
-								System.out.println("5th");
 								if (mtblCalendar.getValueAt(j2, 0).equals(list.get(i).getStart().getClock())){
-									System.out.println("6th");
 									mtblCalendar.setValueAt(list.get(i).getTitle(), j2, j);
+									if(list.get(i).getEnd().getClock() != null){
+										for (int k = j2; k < mtblCalendar.getRowCount(); k++) {
+											mtblCalendar.setValueAt(list.get(i).getTitle(), k, j);
+											if(mtblCalendar.getValueAt(k, 0).equals(list.get(i).getEnd().getClock())){
+												mtblCalendar.setValueAt(list.get(i).getTitle(), k, j);
+												break;
+											}
+										}
+									}
 								}
 							}
 						}

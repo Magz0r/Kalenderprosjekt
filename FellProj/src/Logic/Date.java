@@ -15,7 +15,7 @@ public class Date {
 	public Date(int year, int month, int day, int hour, int minutes) {
 		
 		Calendar cal = Calendar.getInstance();
-		cal.set(year, month, day, hour, minutes, 0);
+		cal.set(year, month-1, day, hour, minutes, 0);
 		timestamp = cal.getTimeInMillis();
 		timeString = year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":00";
 		date = day + "." + month + "." + year;

@@ -54,7 +54,7 @@ public class MineAppointmentsView extends JPanel implements ActionListener {
 		
 	}
 	
-	private void filllist() {
+	public void filllist() {
 		
 		try {
 			appointments = Database.getAppointmentsForUser(user.getUsername());

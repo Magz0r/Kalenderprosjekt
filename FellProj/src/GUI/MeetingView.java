@@ -191,9 +191,6 @@ public class MeetingView extends JPanel implements ActionListener {
 		}
 		
 		
-		
-		
-		
 		setVisible(true);
 
 		frame.add(this);
@@ -205,13 +202,13 @@ public class MeetingView extends JPanel implements ActionListener {
 	private void fillWaiting() {
 		try {
 			waitingParticipants = Database.getUsersByAppointmentAndStatus(model, 2);
-			System.out.println(waitingParticipants);
 		} catch (SQLException e) {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		} catch (ClassNotFoundException e) {
 		}
 		
+		waitingListModel.clear();
 		for (User waiting : waitingParticipants) {
 			waitingListModel.addElement(waiting);
 		}
@@ -221,13 +218,13 @@ public class MeetingView extends JPanel implements ActionListener {
 		
 		try {
 			notParticipants = Database.getUsersByAppointmentAndStatus(model, 0);
-			System.out.println(notParticipants);
 		} catch (SQLException e) {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		} catch (ClassNotFoundException e) {
 		}
 		
+		notAttendingListModel.clear();
 		for (User notatten : notParticipants) {
 			notAttendingListModel.addElement(notatten);
 			if(notatten.getUsername().equals(user.getUsername())) {
@@ -241,13 +238,13 @@ public class MeetingView extends JPanel implements ActionListener {
 
 		try {
 			participants = Database.getUsersByAppointmentAndStatus(model, 1);
-			System.out.println(participants);
 		} catch (SQLException e) {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		} catch (ClassNotFoundException e) {
 		}
 		
+		attendingListModel.clear();
 		for (User atten : participants) {
 			attendingListModel.addElement(atten);
 			if(atten.getUsername().equals(user.getUsername())) {
@@ -301,6 +298,9 @@ public class MeetingView extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Du deltar nå på denne avtalen");
 			attendingButton.setVisible(false);
 			notAttendingButton.setVisible(false);
+			fillAttending();
+			fillNotAttending();
+			fillWaiting();
 			
 		}
 		else if(e.getActionCommand().equals("notAttending")) {
@@ -315,6 +315,9 @@ public class MeetingView extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Du er nå merket som ikke deltakende på denne avtalen");
 			attendingButton.setVisible(false);
 			notAttendingButton.setVisible(false);
+			fillAttending();
+			fillNotAttending();
+			fillWaiting();
 		}
 		else if(e.getActionCommand().equals("cancel")) {
 			frame.setVisible(false);

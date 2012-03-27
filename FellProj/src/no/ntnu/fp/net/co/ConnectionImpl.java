@@ -16,8 +16,8 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.cl.ClException;
@@ -78,7 +78,8 @@ public class ConnectionImpl extends AbstractConnection {
      *             If timeout expires before connection is completed.
      * @see Connection#connect(InetAddress, int)
      */
-    public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
+    @SuppressWarnings("static-access")
+	public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
             SocketTimeoutException {
     	Log.writeToLog("I was called", "ConnectionImpl - connect");
     	
@@ -88,14 +89,17 @@ public class ConnectionImpl extends AbstractConnection {
     	
     	
     	//sending SYN-packet
-    	KtnDatagram syn_packet = this.constructInternalPacket(Flag.SYN);
-    	//Log.writeToLog(syn_packet, "sending this syn packet with SendTimer", "ConnectionImpl - connect");	
-    	SendTimer sTimer = new SendTimer(new ClSocket(), syn_packet);
-    	sTimer.run();
+    	KtnDatagram syn_pckg = this.constructInternalPacket(Flag.SYN);
+    	//Log.writeToLog(syn_pckg, "sending this syn packet with this.sendpacketwithRetransmit", "ConnectionImpl - connect");	
+    
+    	
+    	Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new SendTimer(new ClSocket(), syn_pckg), 0, RETRANSMIT);
+    	
     	this.state = State.SYN_SENT;
     	
     	//receiving SYN_ACK-packet
-    	KtnDatagram syn_ack_packet;
+    	KtnDatagram syn_ack_pckg;
     	
     	long before = System.currentTimeMillis();
     	long after;
@@ -106,29 +110,28 @@ public class ConnectionImpl extends AbstractConnection {
     				throw new SocketTimeoutException("Timeout while waiting for SYN_ACK, server might be down or perhaps network-failure");
     			}
     				
-    			syn_ack_packet = this.receivePacket(true);
-    			if (syn_ack_packet == null)
+    			syn_ack_pckg = this.receivePacket(true);
+    			if (syn_ack_pckg == null)
     				continue;
-    			if (syn_ack_packet.getFlag() != Flag.SYN_ACK){
-    				Log.writeToLog(syn_ack_packet, "got this pckg while w8ing for SYN_ACK", "ConnectionImpl - connect");
+    			if (syn_ack_pckg.getFlag() != Flag.SYN_ACK){
+    				Log.writeToLog(syn_ack_pckg, "got this pckg while w8ing for SYN_ACK", "ConnectionImpl - connect");
     			} else{
-    				sTimer.cancel();
-    				Log.writeToLog(syn_ack_packet, "received SYN_ACK ", "ConnectionImpl - connect");
+    				timer.cancel();
+    				Log.writeToLog(syn_ack_pckg, "received SYN_ACK ", "ConnectionImpl - connect");
     				break;
     			}
     	}
-    	this.lastValidPacketReceived = syn_ack_packet;
-    	this.lastReceivedSeqNum = syn_ack_packet.getSeq_nr();
+    	this.lastValidPacketReceived = syn_ack_pckg;
+    	this.lastReceivedSeqNum = syn_ack_pckg.getSeq_nr();
     	
     	//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
 			try {
 			Thread.sleep(150);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	//ACK'ing the SYN_ACK packet
-    	this.sendAck(syn_ack_packet, false);
+    	this.sendAck(syn_ack_pckg, false);
     	//this.sendAck(syn_packet, false);
     	this.state = State.ESTABLISHED;
     	Log.writeToLog("connection established", "ConnectionImpl - connect");
@@ -156,6 +159,7 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram pckg_received = new KtnDatagram();
         pckg_received = this.receivePacketNotNull();
         
+        
         while (true){       	
         		if (pckg_received.getFlag() != Flag.SYN){
         			Log.writeToLog(pckg_received, "received while w8ing for SYN pckg, ignoring", "ConnectionImpl - accept");
@@ -173,8 +177,9 @@ public class ConnectionImpl extends AbstractConnection {
         syn_ack_pckg.setDest_addr(pckg_received.getSrc_addr());
         syn_ack_pckg.setDest_port(pckg_received.getSrc_port());
         
-        SendTimer sTimer = new SendTimer(new ClSocket(), syn_ack_pckg);
-        sTimer.run();
+        Timer sTimer = new Timer();
+        sTimer.scheduleAtFixedRate(new SendTimer(new ClSocket(), syn_ack_pckg), 0, RETRANSMIT);
+        
         
         //Syn_ack sent, waiting for ack (infinitely may be, should be revised later)
         
@@ -217,14 +222,15 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendDataPacketWithRetransmit(KtnDatagram)
      * @see no.ntnu.fp.net.co.Connection#send(String)
      */
-    public void send(String msg) throws ConnectException, IOException {
+    @SuppressWarnings("static-access")
+	public void send(String msg) throws ConnectException, IOException {
     	
     	Log.writeToLog("I was called", "ConnectionImpl - send");
     	KtnDatagram data_pckg = this.constructDataPacket(msg);
-    	SendTimer sTimer = new SendTimer(new ClSocket(), data_pckg);
+    	Timer sTimer = new Timer();
+    	sTimer.scheduleAtFixedRate(new SendTimer(new ClSocket(), data_pckg), 0, RETRANSMIT);
     	this.lastDataPacketSent = data_pckg;
-    	
-    	sTimer.run();
+ 
     	KtnDatagram rcved_ack;
     	
     	long before = System.currentTimeMillis();
@@ -267,60 +273,11 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#receivePacket(boolean)
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
-    public String receive() throws ConnectException, IOException {
+    @SuppressWarnings("static-access")
+	public String receive() throws ConnectException, IOException {
     	Log.writeToLog("I was called" , "ConnectionImpl - receive");
     	KtnDatagram rcved_pckg = null;
-    	try{
-    		rcved_pckg = this.receivePacket(false);
-    	} catch (EOFException e){
-    		Log.writeToLog(this.disconnectRequest, "THE FIN IS RECEIVED", "F");
-    		//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
-    		try {
-    			Thread.sleep(150);
-    		} catch (InterruptedException ee) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    		this.sendAck(this.disconnectRequest, false);
-    		//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
-    		try {
-    			Thread.sleep(150);
-    		} catch (InterruptedException ee) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    		this.state = State.FIN_WAIT_2;
-    		KtnDatagram fin_pckg = this.constructInternalPacket(Flag.FIN);
-    		SendTimer sTimer = new SendTimer(new ClSocket(), fin_pckg);
-    		sTimer.run();
-    		Log.writeToLog(fin_pckg, "Sending this FIN pckg" , "ConnectionImpl - receive");
-    		
-    		long before = System.currentTimeMillis();
-    		long after;
-    		while (true){
-    			after = System.currentTimeMillis();
-    			if(after - before > this.TIMEOUT){
-    				Log.writeToLog("TIMEOUT while waiting for ack from the other side for fin, closing connection anyway", "ConnectionImpl - receive");
-    				sTimer.cancel();
-    				this.state = State.CLOSED;
-    				throw new ConnectException("connection was closed");
-    			}
-    			rcved_pckg = this.receiveAck();
-    			if (rcved_pckg == null){
-    				Log.writeToLog("received null pckg while waiting for ACK" , "ConnectionImpl - receive");
-    				continue;
-    			}
-    			if (rcved_pckg.getFlag() == Flag.ACK && rcved_pckg.getChecksum() == rcved_pckg.calculateChecksum() && rcved_pckg.getAck() == fin_pckg.getSeq_nr()){
-    				Log.writeToLog("received ACK for my FIN, closing connection", "ConnectionImpl - receive");
-    				this.state = State.CLOSED;
-    				sTimer.cancel();
-    				throw new ConnectException("connection was closed");
-    			} else {
-    				Log.writeToLog(rcved_pckg, "wrong package received, ignoring" , "ConnectionImpl - receive");
-    			}
-    			
-    		}
-    	}
+    	
     	
     	
     	while (true){
@@ -328,20 +285,67 @@ public class ConnectionImpl extends AbstractConnection {
     			try{
     	    		rcved_pckg = this.receivePacket(false);
     	    	} catch (EOFException e){
-    	    		Log.writeToLog("THE  FIN IS RECEIVED" + this.disconnectRequest.toString(), "F");
+    	    		Log.writeToLog(this.disconnectRequest, "THE FIN IS RECEIVED", "ConnectionImpl - receive");
+    	    		//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
+    	    		try {
+    	    			Thread.sleep(150);
+    	    		} catch (InterruptedException ee) {
+    	    			//
+    	    			e.printStackTrace();
+    	    		}
+    	    		this.sendAck(this.disconnectRequest, false);
+    	    		//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
+    	    		try {
+    	    			Thread.sleep(150);
+    	    		} catch (InterruptedException ee) {
+    	    			// 
+    	    			e.printStackTrace();
+    	    		}
+    	    		this.state = State.FIN_WAIT_2;
+    	    		KtnDatagram fin_pckg = this.constructInternalPacket(Flag.FIN);
+    	    		Timer sTimer = new Timer();
+    	    		sTimer.scheduleAtFixedRate(new SendTimer(new ClSocket(), fin_pckg), 0, RETRANSMIT);
+    	    		
+    	    		Log.writeToLog(fin_pckg, "Sending this FIN pckg" , "ConnectionImpl - receive");
+    	    		
+    	    		long before = System.currentTimeMillis();
+    	    		long after;
+    	    		while (true){
+    	    			after = System.currentTimeMillis();
+    	    			if(after - before > this.TIMEOUT){
+    	    				Log.writeToLog("TIMEOUT while waiting for ack from the other side for fin, closing connection anyway", "ConnectionImpl - receive");
+    	    				sTimer.cancel();
+    	    				this.state = State.CLOSED;
+    	    				throw new ConnectException("connection was closed");
+    	    			}
+    	    			rcved_pckg = this.receiveAck();
+    	    			if (rcved_pckg == null){
+    	    				Log.writeToLog("received null pckg while waiting for ACK" , "ConnectionImpl - receive");
+    	    				continue;
+    	    			}
+    	    			if (rcved_pckg.getFlag() == Flag.ACK && rcved_pckg.getChecksum() == rcved_pckg.calculateChecksum() && rcved_pckg.getAck() == fin_pckg.getSeq_nr()){
+    	    				Log.writeToLog("received ACK for my FIN, closing connection", "ConnectionImpl - receive");
+    	    				this.state = State.CLOSED;
+    	    				sTimer.cancel();
+    	    				throw new ConnectException("connection was closed");
+    	    			} else {
+    	    				Log.writeToLog(rcved_pckg, "wrong package received, ignoring" , "ConnectionImpl - receive");
+    	    			}
+    	    			
+    	    		}
     	    	}
     	    	
     		} else{
     			Log.writeToLog(rcved_pckg, "received this, going to check if it is waited in if", "ConnectionImpl - receive");
-    			if (this.isValid(rcved_pckg) && (rcved_pckg.getFlag() == Flag.NONE || rcved_pckg.getFlag() == Flag.FIN)){
+    			if (this.isValid(rcved_pckg)){
     				
-    				if (rcved_pckg.getSeq_nr() == lastReceivedSeqNum + 1 || lastReceivedSeqNum == -1){
+    				if (rcved_pckg.getSeq_nr() == lastReceivedSeqNum + 1){
     				
     					//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
     					try {
     						Thread.sleep(150);
     					} catch (InterruptedException e) {
-    						// TODO Auto-generated catch block
+    						// 
     						e.printStackTrace();
     					}
      					Log.writeToLog(rcved_pckg, "received this pckg(valid CS), ACK'ing it", "ConnectionImpl - receive");
@@ -372,7 +376,8 @@ public class ConnectionImpl extends AbstractConnection {
      * 
      * @see Connection#close()
      */
-    public void close() throws IOException {
+    @SuppressWarnings("static-access")
+	public void close() throws IOException {
     	Log.writeToLog("I was called", "ConnectionImpl - close");
         KtnDatagram fin_pckg = this.constructInternalPacket(Flag.FIN);
         SendTimer sTimer = new SendTimer(new ClSocket(), fin_pckg);
@@ -423,7 +428,7 @@ public class ConnectionImpl extends AbstractConnection {
 				try {
 					Thread.sleep(150);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					// 
 					e.printStackTrace();
 				}
 				

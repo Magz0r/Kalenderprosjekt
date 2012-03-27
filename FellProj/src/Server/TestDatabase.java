@@ -24,7 +24,7 @@ public class TestDatabase {
 		appointment2.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment2.addAttending(new User("Vegard","vegard.holter@gmail.com","vegaholt"));
 		try {
-			ArrayList<Appointment> al2 = Database.getAppointmentsByOwner(new User("Test","tst","tandberg"));
+			ArrayList<Appointment> al2 = Database.getAppointmentsByOwner(new User("Test","tst","vegaholt"));
 			System.out.println(al2.get(0).getTitle());
 			//ArrayList<User> al = Database.getUsersByAppointmentAndStatus(al2.get(0), 2);
 			//Database.addAppointment(appointment);

@@ -8,6 +8,8 @@ public class Date {
 	private String timeString;
 	private String date;
 	private String clock;
+	private int week;
+	private int day;
 	
 	
 	public Date(int year, int month, int day, int hour, int minutes) {
@@ -21,13 +23,21 @@ public class Date {
 		if(minutes == 0) {
 			clock += "0";
 		}
+		week = cal.get(Calendar.WEEK_OF_YEAR);
+		this.day = day;
 	}
 
 	public long getTimestamp() {
 		return timestamp;
 	}
+	public int getWeek() {
+		return week;
+	}
 	public String getTimeString() {
 		return timeString;
+	}
+	public int getDay() {
+		return day;
 	}
 	public String getDate() {
 		return date;

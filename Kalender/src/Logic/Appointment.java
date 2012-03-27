@@ -118,4 +118,8 @@ public class Appointment {
 		return builder.toString();
 		
 	}
+	
+	public String toString() {
+		return title;
+	}
 }

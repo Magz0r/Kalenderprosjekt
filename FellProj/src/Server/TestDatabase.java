@@ -9,6 +9,7 @@ import Logic.Appointment;
 import Logic.Room;
 import Logic.Date;
 import Logic.User;
+import Server.Database;
 
 public class TestDatabase {
 
@@ -25,7 +26,9 @@ public class TestDatabase {
 		appointment2.addAttending(new User("Vegard","vegard.holter@gmail.com","vegaholt"));
 		try {
 			ArrayList<Appointment> al2 = Database.getAppointmentsForUser("tandberg");
-			System.out.println(al2.get(1).getTitle());
+			for(int i = 0;i<al2.size();i++) {
+				System.out.println(al2.get(i).getOwner().getUsername());
+			}
 			//ArrayList<User> al = Database.getUsersByAppointmentAndStatus(al2.get(0), 2);
 			//Database.addAppointment(appointment);
 			//System.out.println(al2.get(0).getTitle());

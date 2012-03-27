@@ -18,6 +18,21 @@ public class Server {
 	
 	
 	public static void main(String[] args) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
+//		interpretInput("login#Tandberg,123");
+//		interpretInput("addappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,,F1-200,0");
+//		interpretInput("delappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0");
+//		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Lise Nordmann-lise@norge.no-LiseN,Kjel-200,0");
+//		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
+		interpretInput("getAppointmentsForUser#tandberg");
+//		interpretInput("getUnansweredAppointmentsForUser#LiseN");
+//		interpretInput("getAllUsers");
+//		interpretInput("getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00");
+//		interpretInput("addUser#Vegard-vegard.holter@gmail.com-vegaholt,123");
+//		interpretInput("addRoom#R3-300");
+//		interpretInput("setAttending#Vegard-vegard.holter@gmail.com-vegaholt,2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,1");
+//		interpretInput("getAppointmentsByOwner#Vegard-vegard.holter@gmail.com-vegaholt");
+	}
+	public static String interpretInput(String input) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		commandList = new ArrayList<String>();
 		commandList.add("login");
 		commandList.add("addappointment");
@@ -33,21 +48,6 @@ public class Server {
 		commandList.add("setAttending");
 		commandList.add("getAppointmentsByOwner");
 		
-//		interpretInput("login#Tandberg,123");
-//		interpretInput("addappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0");
-//		interpretInput("delappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0");
-//		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Lise Nordmann-lise@norge.no-LiseN,Kjel-200,0");
-//		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
-//		interpretInput("getAppointmentsForUser#OlaN");
-//		interpretInput("getUnansweredAppointmentsForUser#LiseN");
-//		interpretInput("getAllUsers");
-//		interpretInput("getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00");
-//		interpretInput("addUser#Vegard-vegard.holter@gmail.com-vegaholt,123");
-//		interpretInput("addRoom#R3-300");
-//		interpretInput("setAttending#Vegard-vegard.holter@gmail.com-vegaholt,2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,1");
-//		interpretInput("getAppointmentsByOwner#Vegard-vegard.holter@gmail.com-vegaholt");
-	}
-	static void interpretInput(String input) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		//Splitter command til string og args til string[]
 		String[] args = input.split("#");
 		String command = args[0];
@@ -67,9 +67,10 @@ public class Server {
 		switch(commandIndex){
 		case 0 :{ //login
 			Database.login(args[0], args[1]);
-			break;
+			return "ok"; //skal returnere 0 eller 1
 		}
 		case 1 :{ //addappointment ok
+			System.out.println("step1");
 			Date start = Date.toDate(args[0]);
 			Date end = Date.toDate(args[1]);
 			String title = args[2];
@@ -80,13 +81,14 @@ public class Server {
 			Appointment appointment = new Appointment(room, start, end, owner, title, description, hidden);
 			//liste med attendies
 			String[] users = args[5].split(">");
-			for(int i = 0; i < users.length; i++){
-				appointment.addAttending(User.toUser(users[i]));
+			if(args[5].length()>0){
+				for(int i = 0; i < users.length; i++){
+					appointment.addAttending(User.toUser(users[i]));
+				}
 			}
 			
-			
 			Database.addAppointment(appointment);
-			break;
+			return "ok";
 		}
 		case 2 :{ //delappointment ok
 			Date start = Date.toDate(args[0]);
@@ -94,12 +96,19 @@ public class Server {
 			String title = args[2];
 			String description = args[3];
 			User owner = User.toUser(args[4]);
-			Room room = Room.toRoom(args[5]);
-			boolean hidden = Boolean.parseBoolean(args[6]);
+			Room room = Room.toRoom(args[6]);
+			boolean hidden = Boolean.parseBoolean(args[7]);
 			Appointment appointment = new Appointment(room, start, end, owner, title, description, hidden);
 			
+			String[] users = args[5].split(">");
+			if(args[5].length()>0){
+				for(int i = 0; i < users.length; i++){
+					appointment.addAttending(User.toUser(users[i]));
+				}
+			}
+			
 			Database.delAppointment(appointment);
-			break;
+			return "ok";
 		}
 		case 3: { //editAppointment ok
 			Date OLDstart = Date.toDate(args[0]);
@@ -111,12 +120,12 @@ public class Server {
 			boolean OLDhidden = Boolean.parseBoolean(args[7]);
 			
 			Appointment OLDappointment = new Appointment(OLDroom, OLDstart, OLDend, OLDowner, OLDtitle, OLDdescription, OLDhidden);
-			
-			String[] OLDusers = args[5].split(">");
-			for(int i = 0; i < OLDusers.length; i++){
-				OLDappointment.addAttending(User.toUser(OLDusers[i]));
+			if(args[5].length()>0){
+				String[] OLDusers = args[5].split(">");
+				for(int i = 0; i < OLDusers.length; i++){
+					OLDappointment.addAttending(User.toUser(OLDusers[i]));
+				}
 			}
-			
 			
 			Date start = Date.toDate(args[8]);
 			Date end = Date.toDate(args[9]);
@@ -127,21 +136,21 @@ public class Server {
 			boolean hidden = Boolean.parseBoolean(args[15]);
 			Appointment appointment = new Appointment(room, start, end, owner, title, description, hidden);
 			
-			String[] users = args[13].split(">");
-			System.out.println("NEW");
-			for(int i = 0; i < users.length; i++){
-				appointment.addAttending(User.toUser(users[i]));
+			if(args[13].length()>0){
+				String[] users = args[13].split(">");
+				for(int i = 0; i < users.length; i++){
+					appointment.addAttending(User.toUser(users[i]));
+				}
 			}
-			
 			Database.editAppointment(OLDappointment, appointment);
-			break;
+			return "ok";
 		}
 		case 4: { //setNotificationRead ok
 			User user = User.toUser(args[0]);
 			String tekst = args[1];
 			Notification notification = new Notification(user, tekst);
 			Database.setNotificationRead(notification, true);
-			break;
+			return "ok";
 		}
 		case 5: { //getAppointmentsForUser mangler å sende
 			String username = args[0];
@@ -149,13 +158,10 @@ public class Server {
 			//lag format for sending til client
 			StringBuilder builder = new StringBuilder();
 			for(Appointment app : appointments){
-				builder.append(app.getServerString() + "¤");
-			}
-			System.out.println(builder.toString());
-			//sendes til client
-			
-			
-			break;
+				builder.append(app.getServerString());
+				builder.append("¤");
+			}			
+			return builder.toString();
 		}
 		case 6: { //getUnasweredAppointmentsForUser
 			String username = args[0];
@@ -165,8 +171,8 @@ public class Server {
 			for(Appointment app : appointments){
 				builder.append(app.getServerString() + "¤");
 			}
-			System.out.println(builder.toString());
-			break;
+			return builder.toString();
+			
 		}
 		case 7: { //getAllUsers må sendes
 			ArrayList<User> users = Database.getAllUsers();
@@ -175,11 +181,8 @@ public class Server {
 			for(User user : users){
 				builder.append(user.getServerString() + "¤");
 			}
-			System.out.println(builder.toString());
-			//sendes til client
+			 return builder.toString();
 			
-			
-			break;
 		}
 		case 8: { //getAvailableRooms må sendes
 			int capasity = Integer.parseInt(args[0]);
@@ -191,22 +194,19 @@ public class Server {
 			for(Room room : rooms){
 				builder.append(room.toString() + "¤");
 			}
-			System.out.println(builder.toString());
-			//sendes til client
+			return builder.toString();
 			
-			
-			break;
 		}
 		case 9: { //addUser ok
 			User user = User.toUser(args[0]);
 			String password = args[1];
 			Database.addUser(user, password);
-			break;
+			return "ok";
 		}
 		case 10: { //addRoom ok
 			Room room = Room.toRoom(args[0]);
 			Database.addRoom(room);
-			break;
+			return "ok";
 		}
 		case 11: { //setAttending
 		
@@ -222,7 +222,7 @@ public class Server {
 			String attending = args[8];
 			
 			Database.setAttending(user, appointment, attending);
-			break;
+			return "ok";
 		}
 		case 12: { //getAppointmentsByOwner
 			User user = User.toUser(args[0]);
@@ -232,8 +232,10 @@ public class Server {
 			for(Appointment app : appointments){
 				builder.append(app.getServerString() + "¤");
 			}
-			System.out.println(builder.toString());
-			break;
+			return builder.toString();
+		}
+		default: {
+			return "feil";
 		}
 		}
 	}

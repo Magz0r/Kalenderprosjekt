@@ -112,11 +112,21 @@ public class Appointment {
 		builder.append(getTitle() + ",");
 		builder.append(getDescription() + ",");
 		builder.append(owner.getServerString() + ",");
+		if(attendies.size()>0){
+			for(User user : attendies){
+				builder.append(user.getServerString());
+				builder.append(">");
+			}
+			builder.append(",");
+		}
+		else{
+			builder.append(",");
+		}
 		builder.append(room.toString() + ",");
 		if(hidden) builder.append("1");
 		else builder.append("0");
+
 		return builder.toString();
-		
 	}
 	
 	public String toString() {

@@ -23,13 +23,13 @@ public class Server {
 //		interpretInput("delappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0");
 //		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Lise Nordmann-lise@norge.no-LiseN,Kjel-200,0");
 //		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
-		interpretInput("getAppointmentsForUser#tandberg");
+//		interpretInput("getAppointmentsForUser#tandberg");
 //		interpretInput("getUnansweredAppointmentsForUser#LiseN");
-//		interpretInput("getAllUsers");
+//		interpretInput("getAllUsers#");
 //		interpretInput("getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00");
 //		interpretInput("addUser#Vegard-vegard.holter@gmail.com-vegaholt,123");
 //		interpretInput("addRoom#R3-300");
-//		interpretInput("setAttending#Vegard-vegard.holter@gmail.com-vegaholt,2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,1");
+//		interpretInput("setAttending#Vegard-vegard.holter@gmail.com-vegaholt,2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,,F1-200,0,1");
 //		interpretInput("getAppointmentsByOwner#Vegard-vegard.holter@gmail.com-vegaholt");
 	}
 	public static String interpretInput(String input) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
@@ -216,10 +216,10 @@ public class Server {
 			String title = args[3];
 			String description = args[4];
 			User owner = User.toUser(args[5]);
-			Room room = Room.toRoom(args[6]);
-			boolean hidden = Boolean.parseBoolean(args[7]);
+			Room room = Room.toRoom(args[7]);
+			boolean hidden = Boolean.parseBoolean(args[8]);
 			Appointment appointment = new Appointment(room, start, end, owner, title, description, hidden);			
-			String attending = args[8];
+			String attending = args[9];
 			
 			Database.setAttending(user, appointment, attending);
 			return "ok";

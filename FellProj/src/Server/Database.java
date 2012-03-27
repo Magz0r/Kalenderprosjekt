@@ -361,6 +361,7 @@ public class Database {
 		close();
 		return output;
 	}
+	
 	public static ArrayList<Appointment> getAttendingAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		ArrayList<Appointment> output = new ArrayList<Appointment>();

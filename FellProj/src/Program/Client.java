@@ -16,15 +16,26 @@ public class Client {
 
 	public static void main(String[] args) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 //		new Login();
-		Appointment appointment = new Appointment(new Room("R40", 5),new Date(2003,2,2, 12, 00),new Date(2003,2,2,13,00),new User("Test2","owner@test.no","Test2"),"Testavtale2","Testinnhold2",false);
+		Appointment appointment = new Appointment(new Room("Sentrum Bowling", 200),new Date(2006,2,2, 12, 00),new Date(2006,2,2,13,00),new User("Test2","owner@test.no","Test2"),"Testavtale2","Testinnhold2",false);
 		appointment.addAttending(Database.getUser("vegaholt"));
-		Appointment appointment2 = new Appointment(new Room("R40", 4),new Date(2004,2,2, 12, 00),new Date(2004,2,2,13,00),new User("Name1","test@test.no","Test"),"Testavtale8","Testinnhold8",false);
+		Appointment appointment2 = new Appointment(new Room("Sentrum Bowling", 200),new Date(2007,2,2, 12, 00),new Date(2007,2,2,13,00),new User("Name1","test@test.no","Test"),"Testavtale8","Testinnhold8",false);
+		Notification notification = new Notification(Database.getUser("tandberg"), "tekst2");
 		
+		
+		
+//		addappointment(appointment);
+//		delappointment(appointment);
+//		addappointment(appointment);
+//		editappointment(appointment, appointment2);
+//		setNotificationRead(notification, true);
+//		getAppointmentsForUser(Database.getUser("tandberg"));
+//		getUnansweredAppointmentsForUser(Database.getUser("tandberg"));
+//		getAllUsers();
 //		getAvailableRooms(1, Date.toDate("2012-09-03 08:00"), Date.toDate("2012-09-03 16:00"));
 //		addUser(new User("Fjodor", "Fedor@gmail.com", "Fedja"), "123");
 //		addRoom("F204", 10);
 //		setAttending(Database.getUser("vegaholt"), appointment);
-//		getAppointmentsByOwner(Database.getUser("tandberg"));
+		getAppointmentsByOwner(Database.getUser("tandberg"));
 	}
 	
 	public static void addappointment(Appointment appointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
@@ -66,7 +77,6 @@ public class Client {
 		String returnString = Server.interpretInput(builder.toString());
 
 	}
-//	interpretInput("getAppointmentsForUser#OlaN");
 	public static ArrayList<Appointment> getAppointmentsForUser(User user) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		builder.append("getAppointmentsForUser#");
@@ -103,7 +113,6 @@ public class Client {
 		}
 		return appointments;
 	}
-//	getUnansweredAppointmentsForUser#LiseN
 	public static ArrayList<Appointment> getUnansweredAppointmentsForUser(User user) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		builder.append("getUnansweredAppointmentsForUser#");
@@ -140,8 +149,7 @@ public class Client {
 		}
 		return appointments;	
 	}
-//	getAllUsers#
-	public static void getAllUsers() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
+	public static ArrayList<User> getAllUsers() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		String userString = Server.interpretInput("getAllUsers#");
 		
 		ArrayList<User> userlist = new ArrayList<User>();
@@ -150,8 +158,8 @@ public class Client {
 		for(int i = 0; i < users.length; i++){
 			userlist.add(User.toUser(users[i]));
 		}
+		return userlist;
 	}
-//	interpretInput("getAvailableRooms#1,2012-09-03 08:00,2012-09-03 16:00");
 	public static ArrayList<Room> getAvailableRooms(int capasity, Date start, Date end) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		builder.append("getAvailableRooms#");
@@ -171,7 +179,6 @@ public class Client {
 		}
 		return roomlist;
 	}
-//	interpretInput("addUser#Vegard-vegard.holter@gmail.com-vegaholt,123");
 	public static void addUser(User user, String password) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		builder.append("addUser#");
@@ -182,7 +189,6 @@ public class Client {
 		String returnString = Server.interpretInput(builder.toString());
 		System.out.println(returnString);
 	}
-//	interpretInput("addRoom#R3-300");
 	public static void addRoom(String roomName, int capasity) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		builder.append("addRoom#");
@@ -192,7 +198,6 @@ public class Client {
 		String returnString = Server.interpretInput(builder.toString());
 		System.out.println(returnString);
 	}
-//	interpretInput("setAttending#Vegard-vegard.holter@gmail.com-vegaholt,2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,F1-200,0,1");
 	public static void setAttending(User user, Appointment appointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		builder.append("setAttending#");
@@ -207,7 +212,6 @@ public class Client {
 		
 		System.out.println(returnString);
 	}
-//	getAppointmentsByOwner#Vegard-vegard.holter@gmail.com-vegaholt;
 	public static ArrayList<Appointment> getAppointmentsByOwner(User user) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		builder.append("getAppointmentsByOwner#");

@@ -1,0 +1,43 @@
+package Program;
+
+import java.sql.SQLException;
+
+import GUI.Login;
+import Logic.Appointment;
+import Logic.Date;
+import Logic.Room;
+import Logic.User;
+import Server.Server;
+
+public class Client {
+
+	public static void main(String[] args) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+//		new Login();
+		Appointment appointment = new Appointment(new Room("R40", 5),new Date(2003,2,2, 12, 00),new Date(2003,2,2,13,00),new User("Test2","owner@test.no","Test2"),"Testavtale2","Testinnhold2",false);
+		addappointment(appointment);
+	}
+	
+	public static void addappointment(Appointment appointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
+		//lager string
+		StringBuilder builder = new StringBuilder();
+		builder.append("addappointment#");
+		builder.append(appointment.getServerString());
+		
+		//sender til Server
+		String returnString = Server.interpretInput(builder.toString());
+		
+		System.out.println(returnString);
+	}
+//	delappointment
+//	editappointment
+//	setNotificationRead
+//	getAppointmentsForUser
+//	getUnansweredAppointmentsForUser
+//	getAllUsers
+//	getAvailableRooms
+//	addUser
+//	addRoom
+//	setAttending
+//	getAppointmentsByOwner
+	
+}

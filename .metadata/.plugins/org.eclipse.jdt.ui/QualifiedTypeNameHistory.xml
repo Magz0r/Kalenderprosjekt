@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="Logic.Appointment"/>
+<fullyQualifiedTypeName name="Logic.Date"/>
+<fullyQualifiedTypeName name="Logic.Room"/>
+<fullyQualifiedTypeName name="Logic.Notification"/>
+<fullyQualifiedTypeName name="Server.Database"/>
+<fullyQualifiedTypeName name="Program.Client"/>
+<fullyQualifiedTypeName name="Logic.User"/>
+</qualifiedTypeNameHistroy>

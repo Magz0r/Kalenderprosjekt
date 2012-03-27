@@ -44,6 +44,7 @@ public class Database {
 	}
 	public static void addAppointment(Appointment appointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		connect();
+		appointment.addAttending(appointment.getOwner());
 		setAppointmentVars(appointment);
 		Statement s = con.createStatement();
 		s.executeUpdate("INSERT INTO appointment (start,end,title,description, owner, room_id,private) VALUES ('" + start + "', '" + end + "', '" + title + "', '" + description + "', '" + user + "', '" + room_id + "', " + privat + ")");

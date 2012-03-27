@@ -114,9 +114,11 @@ public class Database {
 			
 		}
 		Statement s = con.createStatement();
+		newAppointment.addAttending(newAppointment.getOwner());
 		for(int i = 0; i<newAppointment.getAttendies().size(); i++) {
 			s.executeUpdate("INSERT INTO user_has_appointment (user_username, appointment_id) VALUES ('" + newAppointment.getAttendies().get(i).getUsername() + "', " + getAppointmentId(oldAppointment) + ")");
 		}
+	
 		
 		setAppointmentVars(newAppointment);
 		s.executeUpdate("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");

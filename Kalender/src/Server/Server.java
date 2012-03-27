@@ -35,7 +35,7 @@ public class Server {
 //		interpretInput("login#Tandberg,123");
 //		interpretInput("addappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0");
 //		interpretInput("delappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0");
-		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Lise Nordmann-lise@norge.no-LiseN,Kjel-200,0");
+//		interpretInput("editappointment#2012-09-03 08:00,2012-09-03 16:00,Styremøte,beskrivelse av møte,Vegard-vegard.holter@gmail.com-vegaholt,Ola Nordmann-ola@norge.no-OlaN>Lise Nordmann-lise@norge.no-LiseN,F1-200,0,2012-09-03 15:00,2012-09-03 20:00,Bespisning,Mat,Vegard-vegard.holter@gmail.com-vegaholt,Vegard-vegard.holter@gmail.com-vegaholt>Lise Nordmann-lise@norge.no-LiseN,Kjel-200,0");
 //		interpretInput("setNotificationRead#Øystein Tandberg-tandeey@gmail.com-tandberg,halla");
 //		interpretInput("getAppointmentsForUser#OlaN");
 //		interpretInput("getUnansweredAppointmentsForUser#LiseN");

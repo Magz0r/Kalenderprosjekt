@@ -102,6 +102,8 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 		//textarea
 		descriptionArea = new JTextArea(15, 15);
 		descriptionArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		descriptionArea.setLineWrap(true);
+		descriptionArea.setWrapStyleWord(true);
 		
 		//lists
 		userList = new JList(userListModel);
@@ -205,7 +207,7 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 		add(titleField, c);
 		
 		c.gridy = 4;
-		add(descriptionArea, c);
+		add(new JScrollPane(descriptionArea), c);
 		
 		c.gridx = 2;
 		c.gridy = 2;
@@ -270,6 +272,21 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 	public CreateAppointmentGUI(Appointment appointment, User user) {
 		this(user);
 		// set fields.
+		fromDateField.setText(appointment.getStart().getDate());
+		fromClockField.setText(appointment.getStart().getClock());
+		
+		toDateField.setText(appointment.getEnd().getDate());
+		toClockField.setText(appointment.getEnd().getClock());
+		
+		titleField.setText(appointment.getTitle());
+		descriptionArea.setText(appointment.getDescription());
+		
+		for (User attendie : appointment.getAttendies()) {
+			userListModel.addElement(attendie);
+		}
+		
+		roomListModel.addElement(appointment.getRoom());
+		roomList.setSelectedValue(appointment.getRoom(), true);
 	}
 	
 	

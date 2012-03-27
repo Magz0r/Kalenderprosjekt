@@ -8,6 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -15,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -23,19 +26,23 @@ import Logic.Appointment;
 import Logic.Date;
 import Logic.Room;
 import Logic.User;
+import Server.Database;
 
 public class MeetingView extends JPanel implements ActionListener {
 
 	private JFrame frame;
 	private JLabel titleLabel, dateLabel, timeLabel, roomLabel, descriptionLabel, attendingLabel, notAttendingLabel, waitingLabel, contentTimeLabel, contentRoomLabel, contentDateLabel;
 	private JTextArea descriptionArea;
-	private JButton editButton, attendingButton, notAttendingButton;
+	private JButton editButton, attendingButton, notAttendingButton, cancelButton;
 	private GridBagConstraints c;
 	private JList attendingList, notAttendingList, waitingList;
 	private DefaultListModel attendingListModel, notAttendingListModel, waitingListModel;
 	private Appointment model;
+	private User user;
+	private ArrayList<User> participants, notParticipants, waitingParticipants;
 	
 	public MeetingView(Appointment appointment, User user) {
+		this.user = user;
 		model = appointment;
 		frame = new JFrame();
 		
@@ -77,6 +84,9 @@ public class MeetingView extends JPanel implements ActionListener {
 		notAttendingButton = new JButton("Deltar ikke");
 		notAttendingButton.addActionListener(this);
 		notAttendingButton.setActionCommand("notAttending");
+		cancelButton = new JButton("Tilbake");
+		cancelButton.addActionListener(this);
+		cancelButton.setActionCommand("cancel");
 		
 		//listmodel
 		attendingListModel = new DefaultListModel();
@@ -172,9 +182,13 @@ public class MeetingView extends JPanel implements ActionListener {
 		
 		c.gridx++;
 		add(notAttendingButton, c);
+		c.anchor = GridBagConstraints.EAST;
+		add(cancelButton, c);
 		
-		c.gridx++;
-		add(editButton, c);
+		if(user.getUsername().equals(appointment.getOwner().getUsername())) {
+			c.gridx++;
+			add(editButton, c);
+		}
 		
 		
 		
@@ -189,24 +203,58 @@ public class MeetingView extends JPanel implements ActionListener {
 	}
 	
 	private void fillWaiting() {
-		// TODO Auto-generated method stub
-		waitingListModel.addElement("tregmes1");
-		waitingListModel.addElement("tregmes2");
-		waitingListModel.addElement("tregmes3");
+		try {
+			waitingParticipants = Database.getUsersByAppointmentAndStatus(model, 2);
+			System.out.println(waitingParticipants);
+		} catch (SQLException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		
+		for (User waiting : waitingParticipants) {
+			waitingListModel.addElement(waiting);
+		}
 	}
 
 	private void fillNotAttending() {
-		// TODO Auto-generated method stub
-		notAttendingListModel.addElement("kjemes1");
-		notAttendingListModel.addElement("kjemes2");
-		notAttendingListModel.addElement("kjemes3");
+		
+		try {
+			notParticipants = Database.getUsersByAppointmentAndStatus(model, 0);
+			System.out.println(notParticipants);
+		} catch (SQLException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		
+		for (User notatten : notParticipants) {
+			notAttendingListModel.addElement(notatten);
+			if(notatten.getUsername().equals(user.getUsername())) {
+				attendingButton.setVisible(false);
+				notAttendingButton.setVisible(false);
+			}
+		}
 	}
 
 	private void fillAttending() {
-		// TODO Auto-generated method stub
-		attendingListModel.addElement("test1");
-		attendingListModel.addElement("test2");
-		attendingListModel.addElement("test3");
+
+		try {
+			participants = Database.getUsersByAppointmentAndStatus(model, 1);
+			System.out.println(participants);
+		} catch (SQLException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		
+		for (User atten : participants) {
+			attendingListModel.addElement(atten);
+			if(atten.getUsername().equals(user.getUsername())) {
+				attendingButton.setVisible(false);
+				notAttendingButton.setVisible(false);
+			}
+		}
 	}
 	
 
@@ -214,25 +262,62 @@ public class MeetingView extends JPanel implements ActionListener {
 
 		Date start = new Date(2012, 4, 4, 12, 00);
 		Date end = new Date(2012, 4, 5, 13, 00);
-		User owner = new User("tandberg", "tandeey@gmail.com", "tandberg");
+		User owner = new User("tandberg", "tandeey@gmail.com", "LiseN");
 		
 		String lorem = "Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien. Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet, da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg til å bestå gjennom fem århundrer også tålt spranget over til elektronisk typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp Lorem Ipsum for dummytekst.";
 		
 		Appointment appointment = new Appointment(new Room("R60", 3), start, end, owner, "Avtale nr 12", lorem, false);
-		new MeetingView(appointment, owner);
+		
+		User pelle = new User("drittbruker", "drittmail", "Test2");
+		
+		try {
+			appointment = Database.getUnansweredAppointmentsForUser("LiseN").get(0);
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException e) {
+		} catch (SQLException e) {
+		}
+		
+		System.out.println(appointment.getAttendies());
+		new MeetingView(appointment, pelle);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("edit")) {
-			//edit
+			frame.setVisible(false);
+			new CreateAppointmentGUI(model, user);
 		}
 		else if(e.getActionCommand().equals("attending")) {
-			//attending
+
+			try {
+				Database.setAttending(user, model, "1");
+			} catch (InstantiationException e1) {
+			} catch (IllegalAccessException e1) {
+			} catch (ClassNotFoundException e1) {
+			} catch (SQLException e1) {
+			}
+			JOptionPane.showMessageDialog(this, "Du deltar nå på denne avtalen");
+			attendingButton.setVisible(false);
+			notAttendingButton.setVisible(false);
+			
 		}
 		else if(e.getActionCommand().equals("notAttending")) {
-			//not attending
+
+			try {
+				Database.setAttending(user, model, "0");
+			} catch (InstantiationException e1) {
+			} catch (IllegalAccessException e1) {
+			} catch (ClassNotFoundException e1) {
+			} catch (SQLException e1) {
+			}
+			JOptionPane.showMessageDialog(this, "Du er nå merket som ikke deltakende på denne avtalen");
+			attendingButton.setVisible(false);
+			notAttendingButton.setVisible(false);
+		}
+		else if(e.getActionCommand().equals("cancel")) {
+			frame.setVisible(false);
 		}
 	}
 }

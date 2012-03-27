@@ -89,6 +89,9 @@ public class Database {
 		setAppointmentVars(appointment);
 		Statement s = con.createStatement();
 		ResultSet rs = s.executeQuery("SELECT id FROM appointment WHERE start='" + start + "' AND end='" + end + "' AND title='" + title + "' AND description='" + description + "' AND owner='" + user + "' AND room_id='" + room_id + "' AND private='" + privat + "'");
+		//System.out.println("Owner: " + appointment.getOwner().getUsername());
+		//System.out.println(appointment.getEnd().getTimeString());
+		//System.out.println("SELECT id FROM appointment WHERE start='" + start + "' AND end='" + end + "' AND title='" + title + "' AND description='" + description + "' AND owner='" + user + "' AND room_id='" + room_id + "' AND private='" + privat + "'");
 		
 		if(rs.next()) {
 			return rs.getString(1);
@@ -97,7 +100,7 @@ public class Database {
 	}
 	public static void editAppointment(Appointment oldAppointment, Appointment newAppointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		connect();
-		setAppointmentVars(newAppointment);
+		
 		int newPrivate;
 		if(newAppointment.isHidden()) {
 			newPrivate = 1;
@@ -106,28 +109,27 @@ public class Database {
 			newPrivate = 0;
 		}
 		for(int i = 0; i<oldAppointment.getAttendies().size();i++) {
-			boolean match = false;
 			addNotification(oldAppointment.getAttendies().get(i), "Avtalen med tittel " + oldAppointment.getTitle() + " er blitt endret");
 			setAttending(oldAppointment.getAttendies().get(i), oldAppointment, "null");
-			//Remove changes
-			for(int j = 0; j<newAppointment.getAttendies().size(); j++) {
-				if (oldAppointment.getAttendies().get(i) == newAppointment.getAttendies().get(j)) {
-					match = true;
-				}
-			}
-			if(!match) {
-				delUserHasAppointment(oldAppointment.getAttendies().get(i), oldAppointment);
-			}
+			delUserHasAppointment(oldAppointment.getAttendies().get(i), oldAppointment);
+			
 		}
+		//System.out.println("Test");
 		Statement s = con.createStatement();
+		for(int i = 0; i<newAppointment.getAttendies().size(); i++) {
+			s.executeUpdate("INSERT INTO user_has_appointment (user_username, appointment_id) VALUES ('" + newAppointment.getAttendies().get(i).getUsername() + "', " + getAppointmentId(oldAppointment) + ")");
+			System.out.println("Test: " + newAppointment.getAttendies().get(i).getUsername());
+		}
+		
+		setAppointmentVars(newAppointment);
 		s.executeUpdate("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");
-
+		System.out.println("UPDATE appointment SET start='" + start + "', end='" + end + "', title='" + title + "', description='" + description + "', owner='" + user + "', room_id='" + room_id + "', private='" + privat + "' WHERE start='" + oldAppointment.getStart().getTimeString() + "' AND end='" + oldAppointment.getEnd().getTimeString() + "' AND title='" + oldAppointment.getTitle() + "' AND description='" + oldAppointment.getDescription() + "' AND owner='" + oldAppointment.getOwner().getUsername() + "' AND room_id='" + oldAppointment.getRoom().getName() + "' AND private='" + newPrivate + "'");
 		close();
 	}
 	private static void delUserHasAppointment(User user, Appointment appointment) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();
-		System.out.println(user.getUsername() + " " + appointment.getTitle());
+		//System.out.println(user.getUsername() + " " + appointment.getTitle());
 		s.executeUpdate("DELETE FROM user_has_appointment WHERE user_username='" + user.getUsername() + "' AND appointment_id='" + getAppointmentId(appointment) + "'");
 	}
 	public static void addNotification(User user, String notification) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -136,7 +138,7 @@ public class Database {
 			addNotificationStatus(user, notification, 0);
 		}
 		catch(SQLException s) {
-			
+			setNotificationRead(new Notification(user,notification), false);
 		}
 		
 		close();
@@ -182,7 +184,7 @@ public class Database {
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
 			a.setStart(Date.toDate(rs.getString("start")));
 			a.setEnd(Date.toDate(rs.getString("end")));
-			a.setOwner(getUser(rs.getString("user_username")));
+			a.setOwner(getUser(rs.getString("owner")));
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));
 			if(rs.getString("private").equals("1")) {
@@ -207,9 +209,30 @@ public class Database {
 		ArrayList<User> output = new ArrayList<User>();
 		while(rs.next()) {
 			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
+			output.add(user);
+		}
+		return output;
+	}
+	//Status: 0 = Not attending, 1 = Attending, 2 = Unanswered
+	public static ArrayList<User> getUsersByAppointmentAndStatus(Appointment appointment, int status) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		connect();
+		Statement s = con.createStatement();
+		String statusString;
+		if(status == 0) {
+			statusString = "= 0";
+		} else if(status == 1) {
+			statusString = "= 1";
+		} else {
+			statusString = " IS NULL";
+		}
+		ResultSet rs = s.executeQuery("SELECT username, name, email FROM user,user_has_appointment WHERE user_username=username AND appointment_id='" + getAppointmentId(appointment) + "' AND attending" + statusString);
+		ArrayList<User> output = new ArrayList<User>();
+		while(rs.next()) {
+			User user = new User(rs.getString("name"), rs.getString("email"), rs.getString("username"));
 			
 			output.add(user);
 		}
+		close();
 		return output;
 	}
 	public static User getUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -235,25 +258,18 @@ public class Database {
 		close();
 		return output;
 	}
-	public static ArrayList<Appointment> getAppointmentsForUserByStatus(String username, int status) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public static ArrayList<Appointment> getUnansweredAppointmentsForUser(String username) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
-		String statusString;
-		if(status == 0) {
-			statusString = "= 0";
-		} else if(status == 1) {
-			statusString = "= 1";
-		} else {
-			statusString = " IS NULL";
-		}
 		ArrayList<Appointment> output = new ArrayList<Appointment>();
 		Statement s = con.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "' AND attending" + statusString);
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, user_has_appointment, room WHERE user_has_appointment.appointment_id=appointment.id AND room.id= appointment.room_id AND user_username='" + username + "' AND attending IS NULL");
 		while(rs.next()) {
 			Appointment a = new Appointment();
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
 			a.setStart(Date.toDate(rs.getString("start")));
 			a.setEnd(Date.toDate(rs.getString("end")));
-			a.setOwner(getUser(rs.getString("user_username")));
+			a.setOwner(getUser(rs.getString("owner")));
+			//System.out.println(rs.getString("owner"));
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));
 			if(rs.getString("private").equals("1")) {
@@ -285,6 +301,7 @@ public class Database {
 		close();
 		return output;
 	}
+	
 	public static ArrayList<Room> getAvailableRooms(int capacity,Date starttime, Date endtime) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		connect();
 		Statement s = con.createStatement();

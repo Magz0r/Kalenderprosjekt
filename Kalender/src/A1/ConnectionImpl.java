@@ -39,6 +39,7 @@ import no.ntnu.fp.net.cl.KtnDatagram.Flag;
  */
 public class ConnectionImpl extends AbstractConnection {
 
+	int lastReceivedSeqNum = -1;
     /** Keeps track of the used ports for each server port. */
     private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
 
@@ -94,7 +95,16 @@ public class ConnectionImpl extends AbstractConnection {
     	
     	//receiving SYN_ACK-packet
     	KtnDatagram syn_ack_packet;
+    	
+    	long before = System.currentTimeMillis();
+    	long after;
     	while (true){
+    			after = System.currentTimeMillis();
+    			if (after-before > this.TIMEOUT){
+    				Log.writeToLog("timeout while w8ing for SYN_ACK", "ConnectionImpl - connect");
+    				throw new SocketTimeoutException("Timeout while waiting for SYN_ACK, server might be down or perhaps network-failure");
+    			}
+    				
     			syn_ack_packet = this.receivePacket(true);
     			if (syn_ack_packet == null)
     				continue;
@@ -108,6 +118,13 @@ public class ConnectionImpl extends AbstractConnection {
     	}
     	this.lastValidPacketReceived = syn_ack_packet;
     	
+    	//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
+			try {
+			Thread.sleep(150);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	//ACK'ing the SYN_ACK packet
     	this.sendAck(syn_ack_packet, false);
     	//this.sendAck(syn_packet, false);
@@ -122,6 +139,10 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
+    	
+    	
+    	
+    	
         Log.writeToLog("I was called", "ConnectionImpl - accept");
         this.state = State.LISTEN;
         
@@ -131,7 +152,6 @@ public class ConnectionImpl extends AbstractConnection {
         
         //receiving internal pckges until one with SYN flag comes
         KtnDatagram pckg_received = new KtnDatagram();
-        //pckg_received = this.receivePacketNotNull();
         pckg_received = this.receivePacketNotNull();
         
         while (true){       	
@@ -154,7 +174,7 @@ public class ConnectionImpl extends AbstractConnection {
         SendTimer sTimer = new SendTimer(new ClSocket(), syn_ack_pckg);
         sTimer.run();
         
-        
+        //Syn_ack sent, waiting for ack (infinitely may be, should be revised later)
         
         while (true){
         	pckg_received = this.receiveAck();
@@ -173,6 +193,8 @@ public class ConnectionImpl extends AbstractConnection {
         	}
         }
         
+        //returning configured connection in established state
+        returnedConnection.lastReceivedSeqNum = pckg_received.getSeq_nr();
         returnedConnection.remoteAddress = pckg_received.getSrc_addr();
         returnedConnection.remotePort = pckg_received.getSrc_port();
         returnedConnection.state = State.ESTABLISHED;
@@ -217,8 +239,10 @@ public class ConnectionImpl extends AbstractConnection {
     			continue;
     		} else
     			Log.writeToLog(rcved_ack, "received this pck while w8ing for ack", "ConnectionImpl - receive");
+    		this.lastReceivedSeqNum = rcved_ack.getSeq_nr();
     		if (rcved_ack.getAck() == data_pckg.getSeq_nr()){
     			sTimer.cancel();
+    			this.lastReceivedSeqNum = rcved_ack.getSeq_nr();
     			Log.writeToLog("package delivered", "ConnectionImpl - send");
     			break;
     		}
@@ -241,6 +265,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
+    	this.state = State.LISTEN;
     	Log.writeToLog("I was called" , "ConnectionImpl - receive");
     	KtnDatagram rcved_pckg = this.receivePacket(false);
     	
@@ -248,32 +273,35 @@ public class ConnectionImpl extends AbstractConnection {
     		if (rcved_pckg == null){
     			rcved_pckg = this.receivePacket(false);
     		} else{
+    			
     			if (this.isValid(rcved_pckg)){
     				
+    				if (rcved_pckg.getSeq_nr() == lastReceivedSeqNum + 1 || lastReceivedSeqNum == -1){
     				
-    				//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
-     				try {
-						Thread.sleep(150);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-     				Log.writeToLog(rcved_pckg, "received this pckg(valid CS), ACK'ing it", "ConnectionImpl - receive");
-    				this.sendAck(rcved_pckg, false);
-    				this.lastValidPacketReceived = rcved_pckg;
-    				break;
-    			} else{
-    				Log.writeToLog(rcved_pckg, "received this invalid package, had checksum : " + rcved_pckg.getChecksum() + " real checksum is : " + rcved_pckg.calculateChecksum(), "ConnectionImpl - receive");
-    				this.sendAck(this.lastValidPacketReceived, false);
+    					//waiting because the sender begins with listening 2 ack 50 ms after the package is sent. Sometimes ACK is sent before sender begins listening 2 it (happened under development stage)
+    					try {
+    						Thread.sleep(150);
+    					} catch (InterruptedException e) {
+    						// TODO Auto-generated catch block
+    						e.printStackTrace();
+    					}
+     					Log.writeToLog(rcved_pckg, "received this pckg(valid CS), ACK'ing it", "ConnectionImpl - receive");
+     					this.lastReceivedSeqNum = rcved_pckg.getSeq_nr();
+     					this.sendAck(rcved_pckg, false);
+    					this.lastValidPacketReceived = rcved_pckg;
+    					break;
+    				} else{
+    					Log.writeToLog(rcved_pckg, "received this invalid package, had checksum : " + rcved_pckg.getChecksum() + " real checksum is : " + rcved_pckg.calculateChecksum(), "ConnectionImpl - receive");
+    					this.sendAck(this.lastValidPacketReceived, false);
+    				}
     			}
-    			
     		}
     	}
+    	this.state = State.ESTABLISHED;
     	
     	
     	
     	
-    
     	return rcved_pckg.getPayload().toString();
     }
 

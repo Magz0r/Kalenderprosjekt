@@ -206,9 +206,11 @@ public class GUI implements ActionListener {
 			}
 		}
 		
-//		int weekday = cal2.get(Calendar.DAY_OF_WEEK);
 		for (int i = 1; i < 8; i++) {
-			mtblCalendar.setValueAt(datoer.get((365/currentWeek)+i), 0, i);
+			if(currentWeek != 1)
+				mtblCalendar.setValueAt(datoer.get(currentWeek*7-9+i), 0, i);
+			else
+				mtblCalendar.setValueAt(datoer.get(i-1), 0, i);
 		}
 		
 		

@@ -167,7 +167,7 @@ public class GUI implements ActionListener {
 			cmbYear.addItem(String.valueOf(i));
 		}
 		
-		refreshCalendar (realMonth, realYear, realWeek); // refreshes yo calandah, yeh boi!
+		refreshCalendar (); // refreshes yo calandah, yeh boi!
 		
 		//Register action listeners
 		btnPrev.addActionListener(new btnPrev_Action());
@@ -177,15 +177,15 @@ public class GUI implements ActionListener {
 		loggUt.addActionListener(new loggUt_Action());
 		
 	}
-	public static void refreshCalendar(int month, int year, int week){
+	public static void refreshCalendar(){
 		
 		
 		btnPrev.setEnabled(true); //Enable buttons at first
 		btnNext.setEnabled(true);
-		if (week == 1 && year <= realYear-10){btnPrev.setEnabled(false);} //Too early
-		if (week == 52 && year >= realYear+100){btnNext.setEnabled(false);} //Too late
-		lblMonth.setText("Uke: "+(week)); //Refresh the month label (at the top)
-		cmbYear.setSelectedItem(String.valueOf(year)); //Select the correct year in the combo box
+		if (realWeek == 1 && realYear <= realYear-10){btnPrev.setEnabled(false);} //Too early
+		if (realWeek == 52 && realYear >= realYear+100){btnNext.setEnabled(false);} //Too late
+		lblMonth.setText("Uke: "+(realWeek)); //Refresh the month label (at the top)
+		cmbYear.setSelectedItem(String.valueOf(realYear)); //Select the correct year in the combo box
 		
 		
 		//Clear table
@@ -274,7 +274,7 @@ public class GUI implements ActionListener {
 			else{ //Back one month
 				currentWeek -= 1;
 			}
-			refreshCalendar(currentMonth, currentYear, currentWeek);
+			refreshCalendar();
 		}
 	}
 	static class btnNext_Action implements ActionListener{
@@ -288,7 +288,7 @@ public class GUI implements ActionListener {
 			}
 
 
-			refreshCalendar(currentMonth, currentYear, currentWeek);
+			refreshCalendar();
 		}
 	}
 	static class opprett_Action implements ActionListener{
@@ -307,7 +307,7 @@ public class GUI implements ActionListener {
 			if (cmbYear.getSelectedItem() != null){
 				String b = cmbYear.getSelectedItem().toString();
 				currentYear = Integer.parseInt(b); //Get the numeric value
-				refreshCalendar(currentMonth, currentYear, currentWeek); //Refresh
+				refreshCalendar(); //Refresh
 			}
 		}
 	}

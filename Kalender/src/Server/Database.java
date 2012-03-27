@@ -325,5 +325,35 @@ public class Database {
 		s.executeUpdate("UPDATE user_has_appointment SET attending=" + attending + " WHERE user_username='" + user.getUsername() + "' AND appointment_id='" + getAppointmentId(appointment) + "'");
 		close();
 	}
+	public static ArrayList<Appointment> getAppointmentsByOwner(User owner) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		connect();
+		Statement s = con.createStatement();
+		ResultSet rs = s.executeQuery("SELECT * FROM appointment, room WHERE owner='" + owner.getUsername() + "' AND appointment.room_id=room.id");
+		ArrayList<Appointment> output = new ArrayList<Appointment>();
+		while(rs.next()) {
+			Appointment a = new Appointment();
+			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
+			a.setStart(Date.toDate(rs.getString("start")));
+			a.setEnd(Date.toDate(rs.getString("end")));
+			a.setOwner(getUser(rs.getString("owner")));
+			a.setTitle(rs.getString("title"));
+			a.setDescription(rs.getString("description"));
+			if(rs.getString("private").equals("1")) {
+				a.setHidden(true);
+			}
+			else {
+				a.setHidden(false);
+			}
+			String id = rs.getString("id");
+		
+			ArrayList<User> al = getUsersByAppointment(id);
+			for(int i = 0;i<al.size();i++) {
+				a.addAttending(al.get(i));
+			}
+			output.add(a);
+		}
+		close();
+		return output;
+	}
 	
 }

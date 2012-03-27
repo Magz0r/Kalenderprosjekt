@@ -1,6 +1,7 @@
 package Server;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 //import java.util.ArrayList;
 
 import Logic.Appointment;
@@ -23,18 +24,20 @@ public class TestDatabase {
 		appointment2.addAttending(new User("Ola Nordmann","ola@norge.no","OlaN"));
 		appointment2.addAttending(new User("Vegard","vegard.holter@gmail.com","vegaholt"));
 		try {
-			//ArrayList<Appointment> al2 = Database.getUnansweredAppointmentsForUser("LiseN");
+			ArrayList<Appointment> al2 = Database.getAppointmentsByOwner(new User("Test","tst","tandberg"));
+			System.out.println(al2.get(0).getTitle());
 			//ArrayList<User> al = Database.getUsersByAppointmentAndStatus(al2.get(0), 2);
 			//Database.addAppointment(appointment);
 			//System.out.println(al2.get(0).getTitle());
 			//System.out.println(al.get(0).getUsername());
-			Database.editAppointment(appointment, appointment2);
+			//Database.editAppointment(appointment, appointment2);
 			//Database.delAppointment(appointment);
 			//Database.setAttending(user, appointment, "null");
 		} catch (InstantiationException e1) {
 		} catch (IllegalAccessException e1) {
 		} catch (ClassNotFoundException e1) {
 		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
 	}
 

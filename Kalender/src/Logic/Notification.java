@@ -34,7 +34,14 @@ public class Notification {
 	public void setRead(boolean read) {
 		this.read = read;
 	}
-	
+	public String toString() {
+		if(text.length() > 25) {
+			
+			return text.substring(0, 25)+"...";
+		} else {
+			return text;
+		}
+	}
 	
 	
 }

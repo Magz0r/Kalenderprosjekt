@@ -190,7 +190,16 @@ public class MeetingView extends JPanel implements ActionListener {
 			add(editButton, c);
 		}
 		
-		
+		if(user.getUsername().equals(appointment.getOwner().getUsername()) && appointment.getAttendies().size() == 1) {
+			attendingButton.setVisible(false);
+			notAttendingButton.setVisible(false);
+			attendingList.setVisible(false);
+			attendingLabel.setVisible(false);
+			notAttendingList.setVisible(false);
+			notAttendingLabel.setVisible(false);
+			waitingList.setVisible(false);
+			waitingLabel.setVisible(false);
+		}
 		
 		
 		

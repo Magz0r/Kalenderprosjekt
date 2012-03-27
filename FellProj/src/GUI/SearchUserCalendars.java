@@ -36,7 +36,6 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		this.myUser = user;
 		listmodel = new DefaultListModel();
 		list = new JList(listmodel);
-		list.setPreferredSize(new Dimension(100, 300));
 		
 		searchField = new JTextField();
 		searchField.addKeyListener(this);
@@ -58,9 +57,12 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		c.gridy++;
 		
 		add(new JScrollPane(list), c);
+		getComponent(1).setPreferredSize(new Dimension(170, 250));
 
 		c.gridy++;
 		add(viewCalendar, c);
+		c.gridy++;
+		add(viewMyCalendar, c);
 		
 		setVisible(true);
 	}
@@ -75,7 +77,6 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 		} catch (SQLException e) {
 		}
 
-		System.out.println(myUser.getUsername());
 		listmodel.clear();
 		for (User user : users) {
 			if(user.getName().toLowerCase().matches(".*"+searchField.getText().toLowerCase()+".*") && !user.getUsername().equals(myUser.getUsername())) {
@@ -88,12 +89,12 @@ public class SearchUserCalendars extends JPanel implements ActionListener, KeyLi
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		if(e.getSource() == viewCalendar) {
-			
+		if(e.getSource() == viewCalendar && list.getSelectedValue() != null) {
+			System.out.println("viser " + list.getSelectedValue() + " sin kalender");
 			//vis kalender
 		}
 		else if(e.getSource() == viewMyCalendar) {
-			
+			System.out.println("viser din kalender");
 			//vis min kalender
 		}
 		

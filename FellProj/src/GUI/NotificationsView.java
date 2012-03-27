@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -39,7 +40,7 @@ public class NotificationsView extends JPanel implements ActionListener, ListSel
 		listmodel = new DefaultListModel();
 		list = new JList(listmodel);
 		list.addListSelectionListener(this);
-		list.setPreferredSize(new Dimension(160, 250));
+		list.setPreferredSize(new Dimension(170, 250));
 		list.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		
 		textarea = new JTextArea(4, 14);
@@ -56,6 +57,7 @@ public class NotificationsView extends JPanel implements ActionListener, ListSel
 		
 		setLayout(new GridBagLayout());
 		c = new GridBagConstraints();
+		c.insets = new Insets(0, 0, 3, 0);
 		c.gridx = 0;
 		c.gridy = 0;
 		add(list, c);

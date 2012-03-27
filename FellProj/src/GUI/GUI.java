@@ -5,6 +5,10 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
+import java.awt.Component;
+import java.awt.Color;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import Logic.User;
 import Logic.Date;
@@ -213,8 +217,7 @@ public class GUI implements ActionListener {
 				mtblCalendar.setValueAt(datoer.get(i-1), 0, i);
 		}
 		
-		
-		tblCalendar.setDefaultRenderer(tblCalendar.getColumnClass(0), new tblCalendarRenderer());
+		getAppointments();
 		
 	}
 	public static void getAppointments(){
@@ -229,21 +232,37 @@ public class GUI implements ActionListener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		for (int i = 0; i < list.size(); i++) {
-			
+			System.out.println(list.get(i).getStart().getWeek()); 
+			System.out.println(currentWeek + "kk");
+		}
+		
+		if(!list.isEmpty()){
+			for (int i = 0; i < list.size(); i++) {
+				if(list.get(i).getStart().getWeek() == currentWeek){
+					for (int j = 1; j < mtblCalendar.getColumnCount(); j++) {
+						if (mtblCalendar.getValueAt(0, j).equals(list.get(i).getStart().getDay())) {
+							for (int j2 = 1; j2 < mtblCalendar.getRowCount(); j2++) {
+								if (mtblCalendar.getValueAt(j2, 0).equals(list.get(i).getStart().getClock())){
+									mtblCalendar.setValueAt(list.get(i).getTitle(), j2, j);
+									if(list.get(i).getEnd().getClock() != null){
+										for (int k = j2; k < mtblCalendar.getRowCount(); k++) {
+											mtblCalendar.setValueAt(list.get(i).getTitle(), k, j);
+											if(mtblCalendar.getValueAt(k, 0).equals(list.get(i).getEnd().getClock())){
+												mtblCalendar.setValueAt(list.get(i).getTitle(), k, j);
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
-	static class tblCalendarRenderer extends DefaultTableCellRenderer{
-		public Component getTableCellRendererComponent (JTable table, Object value, boolean selected, boolean focused, int row, int column){
-			super.getTableCellRendererComponent(table, value, selected, focused, row, column);
-
-			
-
-			return this;  
-		}
-	}
-
-
 
 	
 	static class btnPrev_Action implements ActionListener{

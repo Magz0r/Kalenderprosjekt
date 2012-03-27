@@ -171,6 +171,7 @@ public class GUI implements ActionListener {
 		
 	}
 	public static void refreshCalendar(int month, int year, int week){
+		int nod, som; //Number Of Days, Start Of Month
 			
 		btnPrev.setEnabled(true); //Enable buttons at first
 		btnNext.setEnabled(true);
@@ -179,6 +180,10 @@ public class GUI implements ActionListener {
 		lblMonth.setText("Uke: "+(week)); //Refresh the month label (at the top)
 		cmbYear.setSelectedItem(String.valueOf(year)); //Select the correct year in the combo box
 		
+		//Get first day of month and number of days
+		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
+		nod = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+		som = cal.get(GregorianCalendar.DAY_OF_WEEK);
 		
 		//Clear table
 		for (int i=0; i<12; i++){
@@ -193,7 +198,36 @@ public class GUI implements ActionListener {
 			mtblCalendar.setValueAt(time[i], i, 0);
 		}
 		
+		int verdi  =  realDay;
+		cal2 = Calendar.getInstance();
+		int numday = cal2.getActualMaximum(Calendar.DAY_OF_MONTH);
+		System.out.println(numday);
+		
+		for (int i = 0; i < 7; i++) {
+			if(currentWeek == realWeek){
+				int weekday = cal2.get(Calendar.DAY_OF_WEEK);
+				int col = weekday;
+				if (col+i >= 8){
+					col = 0;
+					mtblCalendar.setValueAt(verdi-2+1, 0, col+1);
+					break;
+				}
+				mtblCalendar.setValueAt(verdi+i, 0, col+i);
+			}
+			else if(currentWeek != realWeek){
+				int uim = cal2.get(Calendar.WEEK_OF_MONTH);
+				System.out.println(uim);
+				if(currentWeek < realWeek && uim < 4){
+					int weekday = cal2.get(Calendar.DAY_OF_WEEK);
+					int dif = (realWeek - currentWeek)*7 + weekday-1;
+					for (int j = 0; j < 7; j++) {
+						mtblCalendar.setValueAt(realDay-dif+i, 0, i+1);
+					}
+					
+				}
+			}
 
+		}
 		
 		tblCalendar.setDefaultRenderer(tblCalendar.getColumnClass(0), new tblCalendarRenderer());
 		

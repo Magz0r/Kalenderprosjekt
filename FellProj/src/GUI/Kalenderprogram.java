@@ -1,93 +1,40 @@
 package GUI;
 
 import javax.swing.*;
-
 import javax.swing.event.*;
 import javax.swing.table.*;
-
-
-import Logic.User;
-import Logic.Date;
-import Logic.Appointment;
-import Server.Database;
-
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLException;
 import java.util.*;
 
-public class GUI implements ActionListener {
-	
-	static JFrame frame;
-	static Container pane;
-	static JButton opprett, loggUt;
-	static JScrollPane scrNot;
-	static JTabbedPane notify;
-	static JPanel kalender, mine, nye;
+public class Kalenderprogram {
 	static JLabel lblMonth, lblYear;
 	static JButton btnNext, btnPrev;
 	static JTable tblCalendar;
 	static JComboBox cmbYear;
+	static JFrame frmMain;
+	static Container pane;
 	static DefaultTableModel mtblCalendar; //Table model
 	static JScrollPane stblCalendar; //The scrollpane
 	static JPanel pnlCalendar; //The panel
-	static int realDay, realMonth, realYear, currentDay, currentMonth, currentYear, realWeek, currentWeek;
-	static CreateAppointmentGUI lag;
-	static User user;
-	static ArrayList<Appointment> list;
-	static Appointment meeting;
-	static Date date;
-	static Calendar cal2;
+	static int realDay, realMonth, realYear, currentMonth, currentYear, realWeek, currentWeek;
 	
-	public GUI(String username){
-		try {
-			user = Database.getUser(username);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+	public static void main(String[] args) {
 		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
 		catch (ClassNotFoundException e) {}
 		catch (InstantiationException e) {}
 		catch (IllegalAccessException e) {}
 		catch (UnsupportedLookAndFeelException e) {}
 		
-		frame = new JFrame("Kalender");
-		frame.setSize(1100, 600);
-		pane = frame.getContentPane();
+		frmMain = new JFrame("Calendar application");
+		frmMain.setSize(375, 375);
+		pane = frmMain.getContentPane();
 		pane.setLayout(null);
-		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.setResizable(false);
+		frmMain.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
-		opprett = new JButton("Opprett");
-		loggUt = new JButton("Logg ut");
-		scrNot = new JScrollPane();
-		kalender = new JPanel(null);
-		mine = new JPanel(null);
-		nye = new JPanel(null);
-		
-		pane.add(kalender);
-		pane.add(opprett);
-		pane.add(loggUt);
-		pane.add(scrNot);
-		
-		opprett.setBounds(10, 32, 225, 64);
-		loggUt.setBounds(980, 6, 160-loggUt.getPreferredSize().width/2, 25);
-		notify = new JTabbedPane();
-		notify.setBounds(10, 137, 224, 441);
-		frame.getContentPane().add(notify);
-		notify.addTab("Mine", mine);
-		notify.addTab("Nye", nye);
 		
 		lblMonth = new JLabel ("1");
-		lblYear = new JLabel ("Bytt Œr:");
+		lblYear = new JLabel ("Change year:");
 		cmbYear = new JComboBox();
 		btnPrev = new JButton ("<<");
 		btnNext = new JButton (">>");
@@ -107,14 +54,16 @@ public class GUI implements ActionListener {
 		pnlCalendar.add(stblCalendar);
 
 		//Set bounds
-		pnlCalendar.setBounds(246, 32, 682, 540);
-		lblMonth.setBounds(319, 28, 48, 16);
-		lblYear.setBounds(10, 514, 110, 20);
-		cmbYear.setBounds(441, 515, 100, 20);
+		pnlCalendar.setBounds(0, 0, 330, 350);
+		lblMonth.setBounds(160-lblMonth.getPreferredSize().width/2, 25, 100, 25);
+		lblYear.setBounds(10, 305, 110, 20);
+		cmbYear.setBounds(230, 305, 100, 20);
 		btnPrev.setBounds(10, 25, 50, 25);
-		btnNext.setBounds(626, 25, 50, 25);
-		stblCalendar.setBounds(10, 50, 666, 452);
+		btnNext.setBounds(260, 25, 50, 25);
+		stblCalendar.setBounds(10, 50, 300, 250);
 
+		frmMain.setResizable(false);
+		frmMain.setVisible(true);
 
 		//Get real month/year
 		GregorianCalendar cal = new GregorianCalendar(); //Create calendar
@@ -125,12 +74,11 @@ public class GUI implements ActionListener {
 		currentMonth = realMonth; //Match month and year
 		currentYear = realYear;
 		currentWeek = realWeek;
-		currentDay = realDay;
 		
 		
 		//Add headers
 		String[] headers = {" ", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}; //All headers
-		for (int i=0; i<8; i++){
+		for (int i=0; i<7; i++){
 			mtblCalendar.addColumn(headers[i]);
 		}
 		
@@ -151,8 +99,8 @@ public class GUI implements ActionListener {
 		tblCalendar.setShowVerticalLines(true);
 		tblCalendar.setShowHorizontalLines(true);
 		tblCalendar.setGridColor(Color.BLACK);
-		mtblCalendar.setColumnCount(8);
-		mtblCalendar.setRowCount(13);
+		mtblCalendar.setColumnCount(7);
+		mtblCalendar.setRowCount(12);
 
 		
 		//Populate combo box
@@ -166,71 +114,44 @@ public class GUI implements ActionListener {
 		btnPrev.addActionListener(new btnPrev_Action());
 		btnNext.addActionListener(new btnNext_Action());
 		cmbYear.addActionListener(new cmbYear_Action());
-		opprett.addActionListener(new opprett_Action());
-		loggUt.addActionListener(new loggUt_Action());
+		
+		
 		
 	}
 	public static void refreshCalendar(int month, int year, int week){
+		String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+		int nod, som; //Number Of Days, Start Of Month
 			
 		btnPrev.setEnabled(true); //Enable buttons at first
 		btnNext.setEnabled(true);
-		if (week == 1 && year <= realYear-10){btnPrev.setEnabled(false);} //Too early
-		if (week == 52 && year >= realYear+100){btnNext.setEnabled(false);} //Too late
-		lblMonth.setText("Uke: "+(week)); //Refresh the month label (at the top)
+		if (week == 0 && year <= realYear-10){btnPrev.setEnabled(false);} //Too early
+		if (week == 51 && year >= realYear+100){btnNext.setEnabled(false);} //Too late
+		lblMonth.setText("Uke: "+(week+1)); //Refresh the month label (at the top)
+		lblMonth.setBounds(160-lblMonth.getPreferredSize().width/2, 25, 180, 25); //Re-align label with calendar
 		cmbYear.setSelectedItem(String.valueOf(year)); //Select the correct year in the combo box
 		
+		//Get first day of month and number of days
+		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
+		nod = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+		som = cal.get(GregorianCalendar.DAY_OF_WEEK);
 		
 		//Clear table
-		for (int i=0; i<12; i++){
-			for (int j=0; j<8; j++){
+		for (int i=0; i<6; i++){
+			for (int j=0; j<7; j++){
 				mtblCalendar.setValueAt(null, i, j);
 			}
 		}
 
 		//Draw calendar
 		String[] time = {"07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
-		for (int i = 1; i < 12; i++) {
+		for (int i = 0; i < 12; i++) {
 			mtblCalendar.setValueAt(time[i], i, 0);
 		}
-		
-
-		
-		tblCalendar.setDefaultRenderer(tblCalendar.getColumnClass(0), new tblCalendarRenderer());
-		
 	}
-	public static void getAppointments(){
-		try {
-			list = Database.getAppointmentsForUser(user.getUsername());
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		for (int i = 0; i < list.size(); i++) {
-			
-		}
-	}
-	static class tblCalendarRenderer extends DefaultTableCellRenderer{
-		public Component getTableCellRendererComponent (JTable table, Object value, boolean selected, boolean focused, int row, int column){
-			super.getTableCellRendererComponent(table, value, selected, focused, row, column);
-
-			
-
-			return this;  
-		}
-	}
-
-
-
-	
 	static class btnPrev_Action implements ActionListener{
 		public void actionPerformed (ActionEvent e){
-			if (currentWeek == 1){ //Back one year
-				currentWeek = 52;
+			if (currentWeek == 0){ //Back one year
+				currentWeek = 51;
 				currentYear -= 1;
 			}
 			else{ //Back one month
@@ -241,27 +162,14 @@ public class GUI implements ActionListener {
 	}
 	static class btnNext_Action implements ActionListener{
 		public void actionPerformed (ActionEvent e){
-			if (currentWeek == 52){ //Foward one year
-				currentWeek = 1;
+			if (currentWeek == 51){ //Foward one year
+				currentWeek = 0;
 				currentYear += 1;
 			}
 			else{ //Foward one month
 				currentWeek += 1;
 			}
-
-
 			refreshCalendar(currentMonth, currentYear, currentWeek);
-		}
-	}
-	static class opprett_Action implements ActionListener{
-		public void actionPerformed (ActionEvent e){
-			lag = new CreateAppointmentGUI(user);
-		}
-	}
-	static class loggUt_Action implements ActionListener{
-		public void actionPerformed (ActionEvent e){
-			new Login();
-			frame.setVisible(false);
 		}
 	}
 	static class cmbYear_Action implements ActionListener{
@@ -272,11 +180,6 @@ public class GUI implements ActionListener {
 				refreshCalendar(currentMonth, currentYear, currentWeek); //Refresh
 			}
 		}
-	}
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

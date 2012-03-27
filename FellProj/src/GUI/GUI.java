@@ -38,6 +38,7 @@ public class GUI implements ActionListener {
 	static Appointment meeting;
 	static Date date;
 	static Calendar cal2;
+	static JPanel search;
 	
 	public GUI(String username){
 		try {
@@ -70,8 +71,9 @@ public class GUI implements ActionListener {
 		loggUt = new JButton("Logg ut");
 		scrNot = new JScrollPane();
 		kalender = new JPanel(null);
-		mine = new JPanel(null);
-		nye = new JPanel(null);
+		mine = new MineAppointmentsView(user);
+		nye = new NotificationsView(user);
+		search = new SearchUserCalendars(user);
 		
 		pane.add(kalender);
 		pane.add(opprett);
@@ -85,6 +87,7 @@ public class GUI implements ActionListener {
 		frame.getContentPane().add(notify);
 		notify.addTab("Mine", mine);
 		notify.addTab("Nye", nye);
+		notify.addTab("S¿k", search);
 		
 		lblMonth = new JLabel ("1");
 		lblYear = new JLabel ("Bytt Œr:");
@@ -189,23 +192,24 @@ public class GUI implements ActionListener {
 		}
 
 		//Draw calendar
-		String[] time = {"07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00"};
-		for (int i = 1; i < 12; i++) {
+		String[] time = {" ", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00"};
+		for (int i = 1; i < 25; i++) {
 			mtblCalendar.setValueAt(time[i], i, 0);
 		}
 		int[] days ={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 		
-		int[] datoer = null;
+		ArrayList datoer = new ArrayList<Integer>();
 		
 		for (int i = 0; i < days.length; i++) {
 			for (int j = 0; j < days[i]; j++) {
-				datoer[j] = j+1;
+				datoer.add(j+1);
 			}
 		}
-		for (int i = 0; i < datoer.length; i++) {
-			System.out.println(datoer[i]);
-		}
 		
+//		int weekday = cal2.get(Calendar.DAY_OF_WEEK);
+		for (int i = 1; i < 8; i++) {
+			mtblCalendar.setValueAt(datoer.get((365/currentWeek)+i), 0, i);
+		}
 		
 		
 		tblCalendar.setDefaultRenderer(tblCalendar.getColumnClass(0), new tblCalendarRenderer());

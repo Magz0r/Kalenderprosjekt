@@ -107,6 +107,7 @@ public class ConnectionImpl extends AbstractConnection {
     			after = System.currentTimeMillis();
     			if (after-before > this.TIMEOUT){
     				Log.writeToLog("timeout while w8ing for SYN_ACK", "ConnectionImpl - connect");
+    				timer.cancel();
     				throw new SocketTimeoutException("Timeout while waiting for SYN_ACK, server might be down or perhaps network-failure");
     			}
     				

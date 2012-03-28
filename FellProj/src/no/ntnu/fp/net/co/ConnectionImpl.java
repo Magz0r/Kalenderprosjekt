@@ -143,7 +143,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @return A new ConnectionImpl-object representing the new connection.
      * @see Connection#accept()
      */
-    public Connection accept() throws IOException, SocketTimeoutException {
+    public ConnectionImpl accept() throws IOException, SocketTimeoutException {
     	
     	
     	
@@ -443,7 +443,9 @@ public class ConnectionImpl extends AbstractConnection {
         
         
     }
-
+    public String getConnectionIp (){
+    	return this.remoteAddress;
+    }
     /**
      * Test a packet for transmission errors. This function should only called
      * with data or ACK packets in the ESTABLISHED state.

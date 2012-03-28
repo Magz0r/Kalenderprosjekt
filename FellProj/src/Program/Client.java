@@ -1,7 +1,14 @@
 package Program;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import no.ntnu.fp.net.admin.Log;
+import no.ntnu.fp.net.co.ConnectionImpl;
 
 import GUI.Login;
 import Logic.Appointment;
@@ -16,11 +23,37 @@ public class Client {
 
 	public static void main(String[] args) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 //		new Login();
-		Appointment appointment = new Appointment(new Room("Sentrum Bowling", 200),new Date(2006,2,2, 12, 00),new Date(2006,2,2,13,00),new User("Test2","owner@test.no","Test2"),"Testavtale2","Testinnhold2",false);
+		/*Appointment appointment = new Appointment(new Room("Sentrum Bowling", 200),new Date(2006,2,2, 12, 00),new Date(2006,2,2,13,00),new User("Test2","owner@test.no","Test2"),"Testavtale2","Testinnhold2",false);
 		appointment.addAttending(Database.getUser("vegaholt"));
 		Appointment appointment2 = new Appointment(new Room("Sentrum Bowling", 200),new Date(2007,2,2, 12, 00),new Date(2007,2,2,13,00),new User("Name1","test@test.no","Test"),"Testavtale8","Testinnhold8",false);
 		Notification notification = new Notification(Database.getUser("tandberg"), "tekst2");
+		*/
+		Log log = new Log();
+	    log.setLogName("Client");
 		
+		ConnectionImpl conn = new ConnectionImpl(7877);
+		
+		try {
+			conn.connect(InetAddress.getLocalHost(), 7878);
+			String out = conn.receive();
+			Log.writeToLog("RECEIVED THIS STRING + " + out, "CLIENT");
+			Thread.sleep(150);
+			conn.close();
+			Log.writeToLog("CLOSING CLIENT", "CLIENT");
+			
+		} catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 //		addappointment(appointment);
@@ -35,7 +68,7 @@ public class Client {
 //		addUser(new User("Fjodor", "Fedor@gmail.com", "Fedja"), "123");
 //		addRoom("F204", 10);
 //		setAttending(Database.getUser("vegaholt"), appointment);
-		getAppointmentsByOwner(Database.getUser("tandberg"));
+		//getAppointmentsByOwner(Database.getUser("tandberg"));
 	}
 	
 	public static void addappointment(Appointment appointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{

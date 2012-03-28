@@ -112,6 +112,7 @@ public class ConnectionImpl extends AbstractConnection {
     			}
     				
     			syn_ack_pckg = this.receivePacket(true);
+    			Log.writeToLog(syn_ack_pckg, "following pckg received", "ConnectionImpl - connect");
     			if (syn_ack_pckg == null)
     				continue;
     			if (syn_ack_pckg.getFlag() != Flag.SYN_ACK){

@@ -35,7 +35,7 @@ public class Client {
 		
 		try {
 			
-			conn.connect(InetAddress.getByName("78.91,81,13"), 7878);
+			conn.connect(InetAddress.getByName("78.91.81.13"), 7878);
 			String out = conn.receive();
 			Log.writeToLog("RECEIVED THIS STRING + " + out, "CLIENT");
 			Thread.sleep(150);

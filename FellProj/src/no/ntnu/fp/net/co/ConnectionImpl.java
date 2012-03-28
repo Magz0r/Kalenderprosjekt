@@ -119,7 +119,8 @@ public class ConnectionImpl extends AbstractConnection {
     				Log.writeToLog(syn_ack_pckg, "got this pckg while w8ing for SYN_ACK", "ConnectionImpl - connect");
     			} else{
     				timer.cancel();
-    				Log.writeToLog(syn_ack_pckg, "received SYN_ACK ", "ConnectionImpl - connect");
+    				Log.writeToLog(syn_ack_pckg, "received SYN_ACK, it contains connection-port in ACK field ", "ConnectionImpl - connect");
+    				
     				break;
     			}
     	}
@@ -134,6 +135,9 @@ public class ConnectionImpl extends AbstractConnection {
 		}
     	//ACK'ing the SYN_ACK packet
     	this.sendAck(syn_ack_pckg, false);
+    	
+    	//setting connection port to the one received in SYN_ACK's ACK field
+    	this.remotePort = syn_ack_pckg.getAck();
     	//this.sendAck(syn_packet, false);
     	this.state = State.ESTABLISHED;
     	Log.writeToLog("connection established", "ConnectionImpl - connect");
@@ -178,6 +182,18 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram syn_ack_pckg = this.constructInternalPacket(Flag.SYN_ACK);
         syn_ack_pckg.setDest_addr(pckg_received.getSrc_addr());
         syn_ack_pckg.setDest_port(pckg_received.getSrc_port());
+        
+        
+        //finding a free port to take receive connection at, and sending it's number in syn_ack's ACK field:
+        int i;
+        for (i = 7879 ; i < 8100; i++){
+        	if (usedPorts.get(i)==null){
+        		Log.writeToLog("port  " + i + " is free, using it", "ConnectionImpl - accept");
+        	usedPorts.put(i, true);
+        	break;}
+        }
+        syn_ack_pckg.setAck(i);
+        returnedConnection.myPort=i;
         
         Timer sTimer = new Timer();
         sTimer.scheduleAtFixedRate(new SendTimer(new ClSocket(), syn_ack_pckg), 0, RETRANSMIT);

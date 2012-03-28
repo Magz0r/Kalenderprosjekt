@@ -341,7 +341,6 @@ public class CreateAppointmentGUI extends JPanel implements ActionListener, KeyL
 			int ans = JOptionPane.showConfirmDialog(this, "Sikker på at du vil avbryte?", "Avbryt", JOptionPane.YES_NO_OPTION);
 			if(ans == 0) {
 				frame.setVisible(false);
-				new Login();
 			}
 			
 		}

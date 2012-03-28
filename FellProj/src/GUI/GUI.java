@@ -38,7 +38,7 @@ public class GUI implements ActionListener {
 	private Calendar cal2;
 	private JPanel search;
 	
-	public GUI(String username){
+	public GUI(String username) {
 		try {
 			user = Database.getUser(username);
 		} catch (InstantiationException e) {

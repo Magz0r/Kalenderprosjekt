@@ -181,9 +181,7 @@ public class Database {
 			a.setRoom(new Room(rs.getString("room_id"),rs.getInt("capacity")));
 			a.setStart(Date.toDate(rs.getString("start")));
 			a.setEnd(Date.toDate(rs.getString("end")));
-			System.out.println(rs.getString("owner"));
 			a.setOwner(getUser(rs.getString("owner")));
-			System.out.println(a.getOwner().getUsername());
 			a.setTitle(rs.getString("title"));
 			a.setDescription(rs.getString("description"));
 			if(rs.getString("private").equals("1")) {

@@ -105,6 +105,7 @@ public class Login extends JPanel implements ActionListener, KeyListener {
 		try {
 			if(Database.login(username, password)) {
 				start = new GUI(username);
+				frame.setVisible(false);
 			}
 			else {
 				JOptionPane.showMessageDialog(this, "Feil brukernavn / passord");

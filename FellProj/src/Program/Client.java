@@ -34,7 +34,8 @@ public class Client {
 		ConnectionImpl conn = new ConnectionImpl(7877);
 		
 		try {
-			conn.connect(InetAddress.getLocalHost(), 7878);
+			
+			conn.connect(InetAddress.getByName("78.91.81.13"), 7878);
 			String out = conn.receive();
 			Log.writeToLog("RECEIVED THIS STRING + " + out, "CLIENT");
 			Thread.sleep(150);
@@ -56,6 +57,8 @@ public class Client {
 		}
 		
 		
+//		TESTVERDIER	
+//		login("tandberg","1234");
 //		addappointment(appointment);
 //		delappointment(appointment);
 //		addappointment(appointment);
@@ -71,6 +74,18 @@ public class Client {
 		//getAppointmentsByOwner(Database.getUser("tandberg"));
 	}
 	
+//	login#Tandberg,123
+	public static boolean login(String username, String password) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
+		StringBuilder builder = new StringBuilder();
+		builder.append("login#");
+		builder.append(username);
+		builder.append(",");
+		builder.append(password);
+		
+		String returnString = Server.interpretInput(builder.toString());
+		
+		return Boolean.parseBoolean(returnString);
+	}
 	public static void addappointment(Appointment appointment) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		//lager string
 		StringBuilder builder = new StringBuilder();

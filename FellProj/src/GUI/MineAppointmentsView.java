@@ -58,10 +58,10 @@ public class MineAppointmentsView extends JPanel implements ActionListener {
 		
 		try {
 			appointments = Database.getAppointmentsForUser(user.getUsername());
-			ArrayList<Appointment> temp = Database.getAppointmentsByOwner(user);
-			for (Appointment appointment : temp) {
-				appointments.add(appointment);
-			}
+			//ArrayList<Appointment> temp = Database.getAppointmentsByOwner(user);
+			//for (Appointment appointment : temp) {
+				//appointments.add(appointment);
+			//}
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		} catch (ClassNotFoundException e) {
